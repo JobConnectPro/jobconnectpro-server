@@ -20,6 +20,7 @@ router.put(
   resumeUpload.single('resume'),
   userController.uploadResume
 );
+router.delete('/users/:id', authentication, userController.destroy);
 
 router.post('/register', userController.register);
 router.post('/login', userController.login);
