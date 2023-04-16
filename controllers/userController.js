@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 class UserController {
-  // Role: Admin
   static async get(req, res) {
     try {
       const data = await User.findAll();
@@ -14,7 +13,6 @@ class UserController {
     }
   }
 
-  // Role: Seeker
   static async getById(req, res) {
     try {
       const { id } = req.params;
@@ -30,7 +28,6 @@ class UserController {
     }
   }
 
-  // Role: No Role
   static async register(req, res) {
     try {
       const { name, email, password, role, birthday, gender, phone, address } =
@@ -101,7 +98,6 @@ class UserController {
     }
   }
 
-  // Role: Seeker
   static async update(req, res) {
     try {
       const { id } = req.params;
@@ -146,7 +142,6 @@ class UserController {
     }
   }
 
-  // Role: Seeker
   static async uploadProfile(req, res) {
     try {
       const { id } = req.params;
@@ -174,7 +169,6 @@ class UserController {
     }
   }
 
-  // Role: Seeker
   static async uploadResume(req, res) {
     try {
       const { id } = req.params;
@@ -202,15 +196,14 @@ class UserController {
     }
   }
 
-  // Role: Seeker
-  static async deleteUser(req, res) {
+  static async destroy(req, res) {
     try {
       const { id } = req.params;
       const findUser = await User.findOne({ where: { id: +id } });
 
       if (findUser) {
-        const data = await prisma.user.delete({ where: { id: +id } });
-        res.status(200).json({ ...data, message: 'Succesfully delete user!' });
+        const data = await User.destroy({ where: { id: +id } });
+        res.status(200).json({ message: 'Succesfully delete user!' });
       } else {
         res.status(404).json({ message: 'User not found!' });
       }
