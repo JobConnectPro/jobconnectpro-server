@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Skill.belongsToMany(models.User, {
         through: models.UserSkill,
+        as: 'SkilledUser',
         foreignKey: 'skill_id',
       });
     }

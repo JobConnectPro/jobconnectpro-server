@@ -12,6 +12,7 @@ router.get(
   authentication,
   userController.findApplication
 );
+router.get('/users/bookmark', authentication, userController.findBookmark);
 router.get('/users/:id', authentication, userController.findOneUser);
 router.put('/users/:id', authentication, userController.update);
 router.put(
