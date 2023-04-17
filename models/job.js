@@ -27,12 +27,14 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       Job.belongsToMany(models.User, {
-        through: models.Bookmark,
+        through: models.Application,
+        as: 'JobApplication',
         foreignKey: 'job_id',
       });
 
       Job.belongsToMany(models.User, {
-        through: models.Application,
+        through: models.Bookmark,
+        as: 'JobBookmark',
         foreignKey: 'job_id',
       });
     }
