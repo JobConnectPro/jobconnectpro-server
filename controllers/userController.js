@@ -36,6 +36,7 @@ class UserController {
           },
           {
             model: Skill,
+            as: 'UserSkilled',
           },
           {
             model: Education,
@@ -66,11 +67,31 @@ class UserController {
   static async findApplication(req, res, next) {
     try {
       const { id } = req.userLogged;
-      const data = await User.findAll({
+      const data = await User.findOne({
         where: {
           id,
         },
         include: [{ model: Job, as: 'UserApplication' }],
+      });
+
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async findBookmark(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const data = await User.findOne({
+        where: {
+          id,
+        },
+        include: [{ model: Job, as: 'UserBookmark' }],
       });
 
       if (data) {
@@ -159,11 +180,9 @@ class UserController {
           );
           res.status(200).json({ token });
         } else {
-          // res.status(404).json({ message: 'Wrong password!' });
           throw { name: 'WrongPassword' };
         }
       } else {
-        // res.status(404).json({ message: 'User not found!' });
         throw { name: 'ErrorNotFound' };
       }
     } catch (error) {

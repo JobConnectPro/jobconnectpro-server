@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       Company.hasMany(models.Job, {
-        foreignKey: 'job_id',
+        foreignKey: 'company_id',
       });
     }
   }

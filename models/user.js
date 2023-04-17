@@ -40,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
 
       User.belongsToMany(models.Skill, {
         through: models.UserSkill,
+        as: 'UserSkilled',
         foreignKey: 'user_id',
       });
 
