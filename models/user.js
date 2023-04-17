@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -43,12 +44,14 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       User.belongsToMany(models.Job, {
-        through: models.Bookmark,
+        through: models.Application,
+        as: 'UserApplication',
         foreignKey: 'user_id',
       });
 
       User.belongsToMany(models.Job, {
-        through: models.Application,
+        through: models.Bookmark,
+        as: 'UserBookmark',
         foreignKey: 'user_id',
       });
     }
@@ -151,6 +154,13 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      hooks: {
+        beforeCreate: (user, options) => {
+          const salt = bcrypt.genSaltSync(10);
+          const hashPassword = bcrypt.hashSync(user.password, salt);
+          user.password = hashPassword;
+        },
+      },
       sequelize,
       modelName: 'User',
       timestamps: true,

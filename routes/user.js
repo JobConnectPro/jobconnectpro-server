@@ -5,8 +5,14 @@ const authentication = require('../middlewares/authentication.js');
 const resumeUpload = require('../middlewares/multerResume.js');
 const profileUpload = require('../middlewares/multerProfile.js');
 
-router.get('/users', authentication, userController.get);
-router.get('/users/:id', authentication, userController.getById);
+router.get('/users', authentication, userController.findAllUser);
+router.get('/users/profile', authentication, userController.findLoggedUser);
+router.get(
+  '/users/application',
+  authentication,
+  userController.findApplication
+);
+router.get('/users/:id', authentication, userController.findOneUser);
 router.put('/users/:id', authentication, userController.update);
 router.put(
   '/users/:id/profile',

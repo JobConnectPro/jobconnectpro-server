@@ -1,30 +1,102 @@
 require('dotenv').config();
-const { User } = require('../models');
+const {
+  User,
+  WorkExperience,
+  Skill,
+  Education,
+  Project,
+  Organization,
+  Achievement,
+  Attainment,
+  Job,
+} = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 class UserController {
-  static async get(req, res) {
+  static async findAllUser(req, res) {
     try {
       const data = await User.findAll();
       res.status(200).json(data);
     } catch (error) {
-      throw new Error(error);
+      console.log(error);
     }
   }
 
-  static async getById(req, res) {
+  static async findLoggedUser(req, res, next) {
     try {
-      const { id } = req.params;
-      const data = await User.findOne({ where: { id: +id } });
+      const { id } = req.userLogged;
+      const data = await User.findOne({
+        where: {
+          id,
+        },
+        include: [
+          {
+            model: WorkExperience,
+          },
+          {
+            model: Skill,
+          },
+          {
+            model: Education,
+            include: [Attainment],
+          },
+          {
+            model: Achievement,
+          },
+          {
+            model: Organization,
+          },
+          {
+            model: Project,
+          },
+        ],
+      });
 
       if (data) {
         res.status(200).json(data);
       } else {
-        res.status(404).json({ message: 'User not found!' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
-      throw new Error(error);
+      next(error);
+    }
+  }
+
+  static async findApplication(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const data = await User.findAll({
+        where: {
+          id,
+        },
+        include: [{ model: Job, as: 'UserApplication' }],
+      });
+
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async findOneUser(req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = await User.findOne({
+        where: { id: +id },
+      });
+
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -40,11 +112,10 @@ class UserController {
       });
 
       if (!uniqueEmail) {
-        const hashPassword = await bcrypt.hash(password, 10);
         const data = await User.create({
           name,
           email,
-          password: hashPassword,
+          password,
           role,
           birthday,
           gender,
@@ -62,7 +133,7 @@ class UserController {
     }
   }
 
-  static async login(req, res) {
+  static async login(req, res, next) {
     try {
       const { email, password } = req.body;
 
@@ -84,17 +155,19 @@ class UserController {
               role: findUser.role,
             },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '5h' }
           );
           res.status(200).json({ token });
         } else {
-          res.status(404).json({ message: 'Wrong password!' });
+          // res.status(404).json({ message: 'Wrong password!' });
+          throw { name: 'WrongPassword' };
         }
       } else {
-        res.status(404).json({ message: 'User not found!' });
+        // res.status(404).json({ message: 'User not found!' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
-      throw new Error(error);
+      next(error);
     }
   }
 
