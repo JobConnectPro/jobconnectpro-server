@@ -10,7 +10,7 @@ class SectorController {
             next({name: 'ErrorNotFound'})
         }
         }catch (error){
-            console.log(error);
+            next(error)
         }
     }
 
@@ -28,7 +28,7 @@ class SectorController {
                 next({name: 'ErrorNotFound'})
             }
         }catch (error){
-            console.log(error)
+            next(error)
         }
     }
 
@@ -42,10 +42,10 @@ class SectorController {
                 })
                 res.status(200).json({message: 'Successfully created sector'})
             }else{
-                next({name: 'ErrorNotFound'})
+                next({name: 'ValidationFailed'})
             }
         }catch (error){
-            next({name: 'InternalServerError'})
+            next(error)
         }
     }
 
@@ -69,7 +69,7 @@ class SectorController {
                 next({name : 'ErrorNotFound'})
             }
         }catch (error){
-            next({name : 'InternalServerError'})
+            next(error)
         }
     }
 
@@ -88,8 +88,7 @@ class SectorController {
                 next({name: 'ErrorNotFound'})
             }
         }catch (error){
-            next({name : 'InternalServerError'})
-            console.log(error)
+            next(error)
         }
     }
 }

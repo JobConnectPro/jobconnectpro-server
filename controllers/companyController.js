@@ -22,7 +22,7 @@ class CompanyController {
                 next({name: 'ErrorNotFound'})
             }
         }catch(error){
-
+            next(error)
         }
     }
 
@@ -72,7 +72,7 @@ class CompanyController {
             if(data){
                 res.status(200).json({message: "Successfully create company!"})
             }else{
-                next({name: 'ErrorNotFound'})
+                next({name: 'ValidationFailed'})
             }
         }catch (error){
             next(error)
