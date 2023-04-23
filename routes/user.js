@@ -3,33 +3,29 @@ const router = express.Router();
 const userController = require('../controllers/userController.js');
 const authentication = require('../middlewares/authentication.js');
 const resumeUpload = require('../middlewares/multerResume.js');
-const profileUpload = require('../middlewares/multerProfile.js');
+const photoUpload = require('../middlewares/multerPhoto.js');
 
-router.get('/users', authentication, userController.findAllUser);
-router.get('/users/profile', authentication, userController.findLoggedUser);
-router.get(
-  '/users/application',
-  authentication,
-  userController.findApplication
-);
-router.get('/users/bookmark', authentication, userController.findBookmark);
-router.get('/users/:id', authentication, userController.findOneUser);
-router.put('/users/:id', authentication, userController.update);
-router.put(
-  '/users/:id/profile',
-  authentication,
-  profileUpload.single('profile'),
-  userController.uploadProfile
-);
-router.put(
-  '/users/:id/resume',
-  authentication,
-  resumeUpload.single('resume'),
-  userController.uploadResume
-);
-router.delete('/users/:id', authentication, userController.destroy);
-
+// new
 router.post('/register', userController.register);
 router.post('/login', userController.login);
+
+router.get('/users', authentication, userController.getUsers);
+router.get('/users/profile', authentication, userController.getLoggedUser);
+router.put('/users/profile', authentication, userController.updateLoggedUser);
+router.put('/users/password', authentication, userController.updatePassword);
+router.put('/users/photo', authentication, photoUpload.single('photo'), userController.uploadPhoto);
+router.put('/users/resume', authentication, resumeUpload.single('resume'), userController.uploadResume);
+
+router.get('/users/job-application', authentication, userController.getApplication);
+router.post('/users/job-application', authentication, userController.createApplication);
+router.delete('/users/job-application/:jobId', authentication, userController.deleteApplication);
+
+router.get('/users/job-bookmark', authentication, userController.getBookmark);
+router.post('/users/job-bookmark', authentication, userController.createBookmark);
+router.delete('/users/job-bookmark/:jobId', authentication, userController.deleteBookmark);
+
+router.post('/users/skill', authentication, userController.createSkill);
+router.delete('/users/skill/:skillId', authentication, userController.deleteSkill);
+// employer job id (belum)
 
 module.exports = router;
