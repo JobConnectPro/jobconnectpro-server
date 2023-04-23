@@ -319,6 +319,27 @@ class UserController {
     }
   }
 
+  // get logged user job post
+  static async getJobPost(req, res) {
+    try {
+      const { id } = req.userLogged;
+      const data = await User.findOne({
+        where: {
+          id,
+        },
+        include: [{ model: Job, include: [{ model: Company }] }],
+      });
+
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // create logged user skill
   static async createSkill(req, res, next) {
     try {
