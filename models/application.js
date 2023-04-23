@@ -36,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: true,
           len: [1, 255],
         },
+        defaultValue: 'Application being reviewed',
       },
       description: {
         type: DataTypes.STRING,
