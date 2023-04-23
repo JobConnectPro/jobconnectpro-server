@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 const {
   User,
   WorkExperience,
@@ -9,9 +9,9 @@ const {
   Achievement,
   Attainment,
   Job,
-} = require('../models');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+} = require("../models");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 class UserController {
   static async findAllUser(req, res) {
@@ -36,7 +36,7 @@ class UserController {
           },
           {
             model: Skill,
-            as: 'UserSkilled',
+            as: "UserSkilled",
           },
           {
             model: Education,
@@ -57,7 +57,7 @@ class UserController {
       if (data) {
         res.status(200).json(data);
       } else {
-        throw { name: 'ErrorNotFound' };
+        throw { name: "ErrorNotFound" };
       }
     } catch (error) {
       next(error);
@@ -71,13 +71,13 @@ class UserController {
         where: {
           id,
         },
-        include: [{ model: Job, as: 'UserApplication' }],
+        include: [{ model: Job, as: "UserApplication" }],
       });
 
       if (data) {
         res.status(200).json(data);
       } else {
-        throw { name: 'ErrorNotFound' };
+        throw { name: "ErrorNotFound" };
       }
     } catch (error) {
       next(error);
@@ -91,13 +91,13 @@ class UserController {
         where: {
           id,
         },
-        include: [{ model: Job, as: 'UserBookmark' }],
+        include: [{ model: Job, as: "UserBookmark" }],
       });
 
       if (data) {
         res.status(200).json(data);
       } else {
-        throw { name: 'ErrorNotFound' };
+        throw { name: "ErrorNotFound" };
       }
     } catch (error) {
       next(error);
@@ -114,7 +114,7 @@ class UserController {
       if (data) {
         res.status(200).json(data);
       } else {
-        throw { name: 'ErrorNotFound' };
+        throw { name: "ErrorNotFound" };
       }
     } catch (error) {
       next(error);
@@ -145,9 +145,9 @@ class UserController {
         });
         res
           .status(201)
-          .json({ ...data.dataValues, message: 'Succesfully create user!' });
+          .json({ ...data.dataValues, message: "Succesfully create user!" });
       } else {
-        res.status(400).json({ message: 'User already exist!' });
+        res.status(400).json({ message: "User already exist!" });
       }
     } catch (error) {
       throw new Error(error);
@@ -176,14 +176,14 @@ class UserController {
               role: findUser.role,
             },
             process.env.JWT_SECRET,
-            { expiresIn: '5h' }
+            { expiresIn: "5h" }
           );
           res.status(200).json({ token });
         } else {
-          throw { name: 'WrongPassword' };
+          throw { name: "WrongPassword" };
         }
       } else {
-        throw { name: 'ErrorNotFound' };
+        throw { name: "ErrorNotFound" };
       }
     } catch (error) {
       next(error);
@@ -225,9 +225,9 @@ class UserController {
           },
           { where: { id: +id } }
         );
-        res.status(201).json({ message: 'Succesfully update user!' });
+        res.status(201).json({ message: "Succesfully update user!" });
       } else {
-        res.status(404).json({ message: 'User not found!' });
+        res.status(404).json({ message: "User not found!" });
       }
     } catch (error) {
       throw new Error(error);
@@ -249,12 +249,12 @@ class UserController {
             },
             { where: { id: +id } }
           );
-          res.status(200).json({ message: 'Successfully update profile!' });
+          res.status(200).json({ message: "Successfully update profile!" });
         } else {
-          res.status(404).json({ message: 'Profile cannot be null!' });
+          res.status(404).json({ message: "Profile cannot be null!" });
         }
       } else {
-        res.status(404).json({ message: 'User not found!' });
+        res.status(404).json({ message: "User not found!" });
       }
     } catch (error) {
       throw new Error(error);
@@ -276,12 +276,12 @@ class UserController {
             },
             { where: { id: +id } }
           );
-          res.status(200).json({ message: 'Successfully update resume!' });
+          res.status(200).json({ message: "Successfully update resume!" });
         } else {
-          res.status(404).json({ message: 'Resume cannot be null!' });
+          res.status(404).json({ message: "Resume cannot be null!" });
         }
       } else {
-        res.status(404).json({ message: 'User not found!' });
+        res.status(404).json({ message: "User not found!" });
       }
     } catch (error) {
       throw new Error(error);
@@ -295,9 +295,9 @@ class UserController {
 
       if (findUser) {
         const data = await User.destroy({ where: { id: +id } });
-        res.status(200).json({ message: 'Succesfully delete user!' });
+        res.status(200).json({ message: "Succesfully delete user!" });
       } else {
-        res.status(404).json({ message: 'User not found!' });
+        res.status(404).json({ message: "User not found!" });
       }
     } catch (error) {
       throw new Error(error);
