@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "postgres",
-    "password": "root",
+    "password": "sqr890",
     "database": "jobconnectpro",
     "host": "localhost",
     "dialect": "postgres"
