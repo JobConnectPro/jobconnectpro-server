@@ -369,12 +369,13 @@ class UserController {
   // get applicant profile
   static async findApplicant(req, res, next) {
     try {
-      const { userId } = req.params;
+      const { userId, jobId } = req.params;
       const data = await User.findOne({
         where: {
           id: userId,
         },
         include: [
+          { model: Job, as: 'UserApplication', where: { id: jobId } },
           {
             model: WorkExperience,
           },

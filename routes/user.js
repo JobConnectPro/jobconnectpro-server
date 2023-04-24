@@ -31,7 +31,7 @@ router.delete('/users/job-bookmark/:jobId', authentication, authorization(['Seek
 // job post
 router.get('/users/job-post', authentication, authorization(['Employer']), userController.findJobPosts);
 router.get('/users/job-post/:jobId', authentication, authorization(['Employer']), userController.findJobPost);
-router.get('/users/:userId', authentication, authorization(['Employer']), userController.findApplicant);
+router.get('/users/:userId/job/:jobId', authentication, authorization(['Employer']), userController.findApplicant);
 router.put('/users/:userId/job/:jobId', authentication, authorization(['Employer']), userController.updateApplication);
 
 // user skill
