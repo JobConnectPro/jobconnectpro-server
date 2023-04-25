@@ -39,22 +39,23 @@ class CategoryController {
         }
       };
       
-    static async updateCategory(req, res){
+      static async updateCategory(req, res) {
         const { id } = req.params;
         const { category } = req.body;
         try {
           const categoryData = await Category.findByPk(id);
-          if (category) {
-            await category.update({ category });
+          if (categoryData) {
+            await categoryData.update({ category });
             res.json(categoryData);
           } else {
-            res.status(404).send('Category not found');
+            res.status(400).send('Category not found');
           }
         } catch (error) {
           console.log(error);
           res.status(500).send('Internal Server Error');
         }
-      };
+      }
+      
       
       static async deleteCategory(req, res){
         const { id } = req.params;
