@@ -1,29 +1,21 @@
 require('dotenv').config();
-const {
-  User,
-  WorkExperience,
-  Skill,
-  Education,
-  Project,
-  Organization,
-  Achievement,
-  Attainment,
-  Job,
-} = require('../models');
+const { User, Company, WorkExperience, Skill, Education, Project, Organization, Achievement, Attainment, Application, Bookmark, Job, UserSkill } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 class UserController {
-  static async findAllUser(req, res) {
+  // get all user
+  static async findUsers(req, res, next) {
     try {
       const data = await User.findAll();
       res.status(200).json(data);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  static async findLoggedUser(req, res, next) {
+  // get logged user profile
+  static async findUser(req, res, next) {
     try {
       const { id } = req.userLogged;
       const data = await User.findOne({
@@ -64,14 +56,121 @@ class UserController {
     }
   }
 
-  static async findApplication(req, res, next) {
+  // update logged user profile
+  static async updateUser(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const { name, birthday, gender, phone, address, summary, salary_expectation } = req.body;
+
+      const findUser = await User.findOne({ where: { id } });
+
+      if (findUser) {
+        const data = await User.update(
+          {
+            name,
+            birthday,
+            gender,
+            phone,
+            address,
+            summary,
+            salary_expectation,
+          },
+          { where: { id } }
+        );
+        res.status(201).json({ message: 'Successfully update data!' });
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // update logged user password
+  static async updatePassword(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const { password } = req.body;
+
+      const findUser = await User.findOne({ where: { id } });
+
+      if (findUser) {
+        const hashPassword = await bcrypt.hash(password, 10);
+        const data = await User.update({ password: hashPassword }, { where: { id } });
+        res.status(201).json({ message: 'Successfully update password!' });
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // upload logged user photo
+  static async uploadPhoto(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const findUser = await User.findOne({ where: { id } });
+
+      if (findUser) {
+        if (req.file != null) {
+          const photo = req.file.filename;
+          const file = `http://localhost:8000/uploads/photo/${photo}`;
+          const data = await User.update(
+            {
+              photo: file,
+            },
+            { where: { id } }
+          );
+          res.status(200).json({ message: 'Successfully update photo!' });
+        } else {
+          res.status(404).json({ message: 'Photo cannot be null!' });
+        }
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // upload logged user resume
+  static async uploadResume(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const findUser = await User.findOne({ where: { id } });
+
+      if (findUser) {
+        if (req.file != null) {
+          const resume = req.file.filename;
+          const file = `http://localhost:8000/uploads/resume/${resume}`;
+          const data = await User.update(
+            {
+              resume: file,
+            },
+            { where: { id } }
+          );
+          res.status(200).json({ message: 'Successfully update resume!' });
+        } else {
+          res.status(404).json({ message: 'Resume cannot be null!' });
+        }
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // get logged user applications
+  static async findApplications(req, res, next) {
     try {
       const { id } = req.userLogged;
       const data = await User.findOne({
         where: {
           id,
         },
-        include: [{ model: Job, as: 'UserApplication' }],
+        include: [{ model: Job, as: 'UserApplication', include: [{ model: Company }] }],
       });
 
       if (data) {
@@ -84,14 +183,71 @@ class UserController {
     }
   }
 
-  static async findBookmark(req, res, next) {
+  // create logged user application
+  static async createApplication(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const { job_id } = req.body;
+
+      const findApplication = await Application.findOne({
+        where: {
+          user_id: id,
+          job_id,
+        },
+      });
+
+      if (findApplication) {
+        res.status(200).json({ message: 'Already apply job!' });
+      } else {
+        const data = await Application.create({
+          user_id: id,
+          job_id,
+        });
+        res.status(201).json({ ...data.dataValues, message: 'Successfully apply job!' });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // delete logged user application
+  static async destroyApplication(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const { jobId } = req.params;
+
+      const findApplication = await Application.findOne({
+        where: {
+          user_id: id,
+          job_id: jobId,
+        },
+      });
+
+      if (findApplication) {
+        const data = await Application.destroy({
+          where: {
+            user_id: id,
+            job_id: jobId,
+          },
+        });
+        res.status(200).json({ message: 'Successfully cancel apply job!' });
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // get logged user bookmark
+  static async findBookmarks(req, res, next) {
     try {
       const { id } = req.userLogged;
       const data = await User.findOne({
         where: {
           id,
         },
-        include: [{ model: Job, as: 'UserBookmark' }],
+        include: [{ model: Job, as: 'UserBookmark', include: [{ model: Company }] }],
       });
 
       if (data) {
@@ -104,11 +260,72 @@ class UserController {
     }
   }
 
-  static async findOneUser(req, res, next) {
+  // create logged user bookmark
+  static async createBookmark(req, res, next) {
     try {
-      const { id } = req.params;
+      const { id } = req.userLogged;
+      const { job_id } = req.body;
+
+      const findBookmark = await Bookmark.findOne({
+        where: {
+          user_id: id,
+          job_id,
+        },
+      });
+
+      if (findBookmark) {
+        res.status(200).json({ message: 'Already bookmark job!' });
+      } else {
+        const data = await Bookmark.create({
+          user_id: id,
+          job_id,
+        });
+        res.status(201).json({ ...data.dataValues, message: 'Successfully bookmark job!' });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // delete logged user bookmark
+  static async destroyBookmark(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const { jobId } = req.params;
+
+      const findBookmark = await Bookmark.findOne({
+        where: {
+          user_id: id,
+          job_id: jobId,
+        },
+      });
+
+      if (findBookmark) {
+        const data = await Bookmark.destroy({
+          where: {
+            user_id: id,
+            job_id: jobId,
+          },
+        });
+
+        res.status(200).json({ message: 'Successfully remove bookmark job!' });
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // get logged user job post
+  static async findJobPosts(req, res) {
+    try {
+      const { id } = req.userLogged;
       const data = await User.findOne({
-        where: { id: +id },
+        where: {
+          id,
+        },
+        include: [{ model: Job, include: [{ model: Company }] }],
       });
 
       if (data) {
@@ -121,10 +338,172 @@ class UserController {
     }
   }
 
-  static async register(req, res) {
+  // get job applicant
+  static async findJobPost(req, res, next) {
     try {
-      const { name, email, password, role, birthday, gender, phone, address } =
-        req.body;
+      const { id } = req.userLogged;
+      const { jobId } = req.params;
+      const data = await Job.findOne({
+        where: {
+          id: jobId,
+          user_id: id,
+        },
+        include: [
+          {
+            model: User,
+            as: 'JobApplication',
+          },
+        ],
+      });
+
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // get applicant profile
+  static async findApplicant(req, res, next) {
+    try {
+      const { userId, jobId } = req.params;
+      const data = await User.findOne({
+        where: {
+          id: userId,
+        },
+        include: [
+          { model: Job, as: 'UserApplication', where: { id: jobId } },
+          {
+            model: WorkExperience,
+          },
+          {
+            model: Skill,
+            as: 'UserSkilled',
+          },
+          {
+            model: Education,
+            include: [Attainment],
+          },
+          {
+            model: Achievement,
+          },
+          {
+            model: Organization,
+          },
+          {
+            model: Project,
+          },
+        ],
+      });
+
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // update applicant status
+  static async updateApplication(req, res, next) {
+    try {
+      const { userId, jobId } = req.params;
+      const { status, description } = req.body;
+      const findApplication = await Application.findOne({
+        where: {
+          user_id: userId,
+          job_id: jobId,
+        },
+      });
+
+      if (findApplication) {
+        const data = await Application.update(
+          {
+            status,
+            description,
+          },
+          {
+            where: {
+              user_id: userId,
+              job_id: jobId,
+            },
+          }
+        );
+        res.status(201).json({ message: 'Successfully update status!' });
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // create logged user skill
+  static async createSkill(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const { skill_id, level } = req.body;
+
+      const findSkill = await UserSkill.findOne({
+        where: {
+          user_id: id,
+          skill_id,
+        },
+      });
+
+      if (findSkill) {
+        res.status(200).json({ message: 'Already add skill!' });
+      } else {
+        const data = await UserSkill.create({
+          user_id: id,
+          skill_id,
+          level,
+        });
+        res.status(201).json({ ...data.dataValues, message: 'Successfully add skill!' });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // delete logged user skill
+  static async deleteSkill(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const { skillId } = req.params;
+
+      const findSkill = await UserSkill.findOne({
+        where: {
+          user_id: id,
+          skill_id: skillId,
+        },
+      });
+
+      if (findSkill) {
+        const data = await UserSkill.destroy({
+          where: {
+            user_id: id,
+            skill_id: skillId,
+          },
+        });
+        res.status(200).json({ message: 'Successfully remove skill!' });
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // user register
+  static async register(req, res, next) {
+    try {
+      const { name, email, password, role, birthday, gender, phone, address } = req.body;
 
       const uniqueEmail = await User.findOne({
         where: {
@@ -143,17 +522,16 @@ class UserController {
           phone,
           address,
         });
-        res
-          .status(201)
-          .json({ ...data.dataValues, message: 'Succesfully create user!' });
+        res.status(201).json({ ...data.dataValues, message: 'Successfully register!' });
       } else {
-        res.status(400).json({ message: 'User already exist!' });
+        throw { name: 'UserExist' };
       }
     } catch (error) {
-      throw new Error(error);
+      next(error);
     }
   }
 
+  // user login
   static async login(req, res, next) {
     try {
       const { email, password } = req.body;
@@ -163,10 +541,7 @@ class UserController {
       });
 
       if (findUser) {
-        const comparePassword = await bcrypt.compare(
-          password,
-          findUser.password
-        );
+        const comparePassword = await bcrypt.compare(password, findUser.password);
         if (comparePassword) {
           const token = jwt.sign(
             {
@@ -176,9 +551,12 @@ class UserController {
               role: findUser.role,
             },
             process.env.JWT_SECRET,
-            { expiresIn: '5h' }
+            { expiresIn: '12h' }
           );
-          res.status(200).json({ token });
+          res.status(200).json({
+            token,
+            role: findUser.role,
+          });
         } else {
           throw { name: 'WrongPassword' };
         }
@@ -187,120 +565,6 @@ class UserController {
       }
     } catch (error) {
       next(error);
-    }
-  }
-
-  static async update(req, res) {
-    try {
-      const { id } = req.params;
-      const {
-        name,
-        email,
-        password,
-        role,
-        birthday,
-        gender,
-        phone,
-        address,
-        summary,
-        salary_expectation,
-      } = req.body;
-
-      const findUser = await User.findOne({ where: { id: +id } });
-
-      if (findUser) {
-        const hashPassword = await bcrypt.hash(password, 10);
-        const data = await User.update(
-          {
-            name,
-            email,
-            password: hashPassword,
-            role,
-            birthday,
-            gender,
-            phone,
-            address,
-            summary,
-            salary_expectation,
-          },
-          { where: { id: +id } }
-        );
-        res.status(201).json({ message: 'Succesfully update user!' });
-      } else {
-        res.status(404).json({ message: 'User not found!' });
-      }
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
-
-  static async uploadProfile(req, res) {
-    try {
-      const { id } = req.params;
-      const findUser = await User.findOne({ where: { id: +id } });
-
-      if (findUser) {
-        if (req.file != null) {
-          const profile = req.file.filename;
-          const file = `http://localhost:8000/uploads/profile/${profile}`;
-          const data = await User.update(
-            {
-              photo: file,
-            },
-            { where: { id: +id } }
-          );
-          res.status(200).json({ message: 'Successfully update profile!' });
-        } else {
-          res.status(404).json({ message: 'Profile cannot be null!' });
-        }
-      } else {
-        res.status(404).json({ message: 'User not found!' });
-      }
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
-
-  static async uploadResume(req, res) {
-    try {
-      const { id } = req.params;
-      const findUser = await User.findOne({ where: { id: +id } });
-
-      if (findUser) {
-        if (req.file != null) {
-          const resume = req.file.filename;
-          const file = `http://localhost:8000/uploads/resume/${resume}`;
-          const data = await User.update(
-            {
-              resume: file,
-            },
-            { where: { id: +id } }
-          );
-          res.status(200).json({ message: 'Successfully update resume!' });
-        } else {
-          res.status(404).json({ message: 'Resume cannot be null!' });
-        }
-      } else {
-        res.status(404).json({ message: 'User not found!' });
-      }
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
-
-  static async destroy(req, res) {
-    try {
-      const { id } = req.params;
-      const findUser = await User.findOne({ where: { id: +id } });
-
-      if (findUser) {
-        const data = await User.destroy({ where: { id: +id } });
-        res.status(200).json({ message: 'Succesfully delete user!' });
-      } else {
-        res.status(404).json({ message: 'User not found!' });
-      }
-    } catch (error) {
-      throw new Error(error);
     }
   }
 }
