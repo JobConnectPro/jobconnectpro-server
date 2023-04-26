@@ -78,7 +78,7 @@ class CategoryController {
         try {
           const categories = await Category.findAll({
             where: {
-              name: {
+              category: {
                 [Op.iLike]: `%${q}%`,
               },
             },
