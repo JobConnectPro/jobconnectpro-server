@@ -1,5 +1,5 @@
-const { Job } = require("../models");
-const { Category } = require("../models");
+const { Job, Category, Company } = require("../models");
+
 
 class JobController {
   static async findAllJobs(req, res) {
@@ -48,7 +48,6 @@ class JobController {
 
   static async createJobs(req, res) {
     const {
-      company_id,
       title,
       description,
       categories,
@@ -61,11 +60,21 @@ class JobController {
       starting_date,
       minimum_experience,
     } = req.body;
+  
     const userId = req.userLogged.id;
+  
     try {
+      const company = await Company.findOne({
+        where: { user_id : userId}
+      });
+      
+      if (!company) {
+        return res.status(404).json({ message: "Company Not Found" });
+      }
+  
       const job = await Job.create({
         user_id: userId,
-        company_id,
+        company_id: company.id,
         title,
         description,
         requirement,
@@ -77,23 +86,31 @@ class JobController {
         starting_date,
         minimum_experience,
       });
+  
       if (categories && categories.length > 0) {
         const categoriesInstance = await Category.findAll({
           where: { category: categories },
         });
         await job.addCategories(categoriesInstance);
       }
+  
       res.status(201).json({
         message: "job created",
         fullField: {
           data: job,
+          company : {
+            companyName : company.company_name
+          }
         },
       });
+  
     } catch (error) {
       console.log(error);
       res.status(500).send("Internal Server Error");
     }
   }
+  
+  
 
   static async updateJob(req, res) {
     const { id } = req.params;
