@@ -8,6 +8,8 @@ const sectorRouter = require('./sector.js');
 const workExperienceRouter = require("./workExperience.js");
 const organizationRouter = require("./organization.js");
 const skillRouter = require('./skill.js');
+const job = require('./job.js');
+const category = require ('./category.js')
 
 router.use(userRouter);
 router.use(workExperienceRouter);
@@ -16,5 +18,7 @@ router.use(companyRouter);
 router.use(sectorRouter);
 router.use(organizationRouter);
 router.use(skillRouter);
+router.use(job);
+router.use(category);
 
 module.exports = router;
