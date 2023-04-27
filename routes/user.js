@@ -3,33 +3,39 @@ const router = express.Router();
 const userController = require('../controllers/userController.js');
 const authentication = require('../middlewares/authentication.js');
 const resumeUpload = require('../middlewares/multerResume.js');
-const profileUpload = require('../middlewares/multerProfile.js');
+const photoUpload = require('../middlewares/multerPhoto.js');
+const authorization = require('../middlewares/authorization.js');
 
-router.get('/users', authentication, userController.findAllUser);
-router.get('/users/profile', authentication, userController.findLoggedUser);
-router.get(
-  '/users/application',
-  authentication,
-  userController.findApplication
-);
-router.get('/users/bookmark', authentication, userController.findBookmark);
-router.get('/users/:id', authentication, userController.findOneUser);
-router.put('/users/:id', authentication, userController.update);
-router.put(
-  '/users/:id/profile',
-  authentication,
-  profileUpload.single('profile'),
-  userController.uploadProfile
-);
-router.put(
-  '/users/:id/resume',
-  authentication,
-  resumeUpload.single('resume'),
-  userController.uploadResume
-);
-router.delete('/users/:id', authentication, userController.destroy);
-
+// auth
 router.post('/register', userController.register);
 router.post('/login', userController.login);
+
+// user profile
+router.get('/users', authentication, authorization(['Admin']), userController.findUsers);
+router.get('/users/profile', authentication, authorization(['Admin', 'Seeker', 'Employer']), userController.findUser);
+router.put('/users/profile', authentication, authorization(['Admin', 'Seeker', 'Employer']), userController.updateUser);
+router.put('/users/password', authentication, authorization(['Admin', 'Seeker', 'Employer']), userController.updatePassword);
+router.put('/users/photo', authentication, authorization(['Admin', 'Seeker', 'Employer']), photoUpload.single('photo'), userController.uploadPhoto);
+router.put('/users/resume', authentication, authorization(['Seeker']), resumeUpload.single('resume'), userController.uploadResume);
+
+// application
+router.get('/users/job-application', authentication, authorization(['Seeker']), userController.findApplications);
+router.post('/users/job-application', authentication, authorization(['Seeker']), userController.createApplication);
+router.delete('/users/job-application/:jobId', authentication, authorization(['Seeker']), userController.destroyApplication);
+
+// bookmark
+router.get('/users/job-bookmark', authentication, authorization(['Seeker']), userController.findBookmarks);
+router.post('/users/job-bookmark', authentication, authorization(['Seeker']), userController.createBookmark);
+router.delete('/users/job-bookmark/:jobId', authentication, authorization(['Seeker']), userController.destroyBookmark);
+
+// job post
+router.get('/users/job-post', authentication, authorization(['Employer']), userController.findJobPosts);
+router.get('/users/job-post/:jobId', authentication, authorization(['Employer']), userController.findJobPost);
+router.get('/users/:userId/job/:jobId', authentication, authorization(['Employer']), userController.findApplicant);
+router.put('/users/:userId/job/:jobId', authentication, authorization(['Employer']), userController.updateApplication);
+
+// user skill
+router.post('/users/skill', authentication, authorization(['Seeker']), userController.createSkill);
+router.delete('/users/skill/:skillId', authentication, authorization(['Seeker']), userController.deleteSkill);
 
 module.exports = router;

@@ -1,13 +1,15 @@
 const errorHandler = (err, req, res, next) => {
   console.log(err);
   if (err.name === 'WrongPassword') {
-    res.status(400).json({ message: 'Wrong Email or Password' });
+    res.status(400).json({ message: 'Wrong password!' });
   } else if (err.name === 'ErrorNotFound') {
-    res.status(404).json({ message: `Error not found` });
+    res.status(404).json({ message: 'Error not found!' });
   } else if (err.name === 'ValidationFailed') {
-    res.status(404).json({ message: `Validation Failed` });
-  }else {
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(404).json({ message: 'Validation failed!' });
+  } else if (err.name === 'UserExist') {
+    res.status(400).json({ message: 'User already exist!' });
+  } else {
+    res.status(500).json({ message: 'Internal server error!' });
   }
 };
 
