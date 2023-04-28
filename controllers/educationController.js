@@ -4,9 +4,11 @@ class EducationController {
     static async getAllEducation(req, res, next) {
         try{
             const findAllEducation = await Education.findAll({
+                where: {id},
                 include: [
                     {model: Attainment}
                 ]
+                
             })
 
             if(findAllEducation){
