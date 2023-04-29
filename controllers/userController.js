@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { User, Company, WorkExperience, Skill, Education, Project, Organization, Achievement, Attainment, Application, Bookmark, Job, UserSkill } = require('../models');
+const { User, Company, WorkExperience, Skill, Education, Project, Organization, Achievement, Attainment, Application, Bookmark, Job, UserSkill, Sector } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -317,8 +317,29 @@ class UserController {
     }
   }
 
+  // get logged user company
+  static async findUserCompany(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const data = await User.findOne({
+        where: {
+          id,
+        },
+        include: [{ model: Company, include: [{ model: Sector }] }],
+      });
+
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // get logged user job post
-  static async findJobPosts(req, res) {
+  static async findJobPosts(req, res, next) {
     try {
       const { id } = req.userLogged;
       const data = await User.findOne({
@@ -467,7 +488,7 @@ class UserController {
         res.status(201).json({ ...data.dataValues, message: 'Successfully add skill!' });
       }
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
