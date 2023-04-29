@@ -8,7 +8,7 @@ class SkillController {
       if (data) {
         res.status(200).json(data);
       } else {
-        next({ name: 'ErrorNotFound' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
       next(error);
@@ -41,7 +41,7 @@ class SkillController {
         });
         res.status(201).json({ ...data.dataValues, message: 'Successfully create skill!' });
       } else {
-        next({ name: 'ValidationFailed' });
+        throw { name: 'ValidationFailed' };
       }
     } catch (error) {
       next(error);
@@ -69,7 +69,7 @@ class SkillController {
   static async destroySkill(req, res, next) {
     try {
       const { skillId } = req.params;
-      
+
       const findSkill = await Skill.findOne({ where: { id: skillId } });
 
       if (findSkill) {

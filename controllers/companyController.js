@@ -17,7 +17,7 @@ class CompanyController {
       if (data) {
         res.status(200).json(data);
       } else {
-        next({ name: 'ErrorNotFound' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
       next(error);
@@ -27,7 +27,7 @@ class CompanyController {
   static async findCompany(req, res, next) {
     try {
       const { companyId } = req.params;
-      
+
       const data = await Company.findOne({
         where: {
           id: companyId,
@@ -48,7 +48,7 @@ class CompanyController {
       if (data) {
         res.status(200).json(data);
       } else {
-        next({ name: 'ErrorNotFound' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
       next(error);
@@ -76,7 +76,7 @@ class CompanyController {
       if (data) {
         res.status(201).json({ ...data.dataValues, message: 'Successfully create company!' });
       } else {
-        next({ name: 'ValidationFailed' });
+        throw { name: 'ValidationFailed' };
       }
     } catch (error) {
       next(error);
@@ -111,7 +111,7 @@ class CompanyController {
         );
         res.status(201).json({ message: 'Successfully update company!' });
       } else {
-        next({ name: 'ErrorNotFound' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
       next(error);
@@ -144,7 +144,7 @@ class CompanyController {
         );
         res.status(201).json({ message: 'Successfully update logo!' });
       } else {
-        next({ name: 'ErrorNotFound' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
       next(error);
@@ -169,7 +169,7 @@ class CompanyController {
         });
         res.status(200).json({ message: 'Successfully delete company!' });
       } else {
-        next({ name: 'ErrorNotFound' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
       next(error);
