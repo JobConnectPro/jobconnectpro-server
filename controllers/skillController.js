@@ -1,19 +1,24 @@
 const { Skill } = require('../models');
 
 class SkillController {
-  static async findAllSkill(req, res) {
+  static async findSkills(req, res, next) {
     try {
       const data = await Skill.findAll();
-      res.status(200).json(data);
+
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        next({ name: 'ErrorNotFound' });
+      }
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  static async findOneSkill(req, res, next) {
+  static async findSkill(req, res, next) {
     try {
-      const { id } = req.params;
-      const data = await Skill.findOne({ where: { id } });
+      const { skillId } = req.params;
+      const data = await Skill.findOne({ where: { id: skillId } });
 
       if (data) {
         res.status(200).json(data);
@@ -25,35 +30,34 @@ class SkillController {
     }
   }
 
-  static async createSkill(req, res) {
+  static async createSkill(req, res, next) {
     try {
       const { skill } = req.body;
-      const data = await Skill.create({
-        skill,
-      });
-      res
-        .status(201)
-        .json({ ...data.dataValues, message: 'Succesfully create skill!' });
+      const uniqueSkill = await Skill.findOne({ where: { skill } });
+
+      if (!uniqueSkill) {
+        const data = await Skill.create({
+          skill,
+        });
+        res.status(201).json({ ...data.dataValues, message: 'Successfully create skill!' });
+      } else {
+        next({ name: 'ValidationFailed' });
+      }
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
   static async updateSkill(req, res, next) {
     try {
-      const { id } = req.params;
+      const { skillId } = req.params;
       const { skill } = req.body;
 
-      const findSkill = await Skill.findOne({ where: { id } });
+      const findSkill = await Skill.findOne({ where: { id: skillId } });
 
       if (findSkill) {
-        const data = await Skill.update(
-          {
-            skill,
-          },
-          { where: { id } }
-        );
-        res.status(201).json({ message: 'Succesfully update skill!' });
+        const data = await Skill.update({ skill }, { where: { id: skillId } });
+        res.status(201).json({ message: 'Successfully update skill!' });
       } else {
         throw { name: 'ErrorNotFound' };
       }
@@ -64,12 +68,13 @@ class SkillController {
 
   static async destroySkill(req, res, next) {
     try {
-      const { id } = req.params;
-      const findSkill = await Skill.findOne({ where: { id } });
+      const { skillId } = req.params;
+      
+      const findSkill = await Skill.findOne({ where: { id: skillId } });
 
       if (findSkill) {
-        const data = await Skill.destroy({ where: { id } });
-        res.status(200).json({ message: 'Succesfully delete skill!' });
+        const data = await Skill.destroy({ where: { id: skillId } });
+        res.status(200).json({ message: 'Successfully delete skill!' });
       } else {
         throw { name: 'ErrorNotFound' };
       }
