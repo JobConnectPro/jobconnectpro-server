@@ -8,7 +8,7 @@ class SectorController {
       if (data) {
         res.status(200).json(data);
       } else {
-        next({ name: 'ErrorNotFound' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
       next(error);
@@ -23,7 +23,7 @@ class SectorController {
       if (data) {
         res.status(200).json(data);
       } else {
-        next({ name: 'ErrorNotFound' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
       next(error);
@@ -41,7 +41,7 @@ class SectorController {
         });
         res.status(201).json({ ...data.dataValues, message: 'Successfully create sector!' });
       } else {
-        next({ name: 'ValidationFailed' });
+        throw { name: 'ValidationFailed' };
       }
     } catch (error) {
       next(error);
@@ -59,7 +59,7 @@ class SectorController {
         const data = await Sector.update({ sector }, { where: { id: sectorId } });
         res.status(201).json({ message: 'Successfully update sector!' });
       } else {
-        next({ name: 'ErrorNotFound' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
       next(error);
@@ -76,7 +76,7 @@ class SectorController {
         const data = await Sector.destroy({ where: { id: sectorId } });
         res.status(200).json({ message: 'Successfully delete sector!' });
       } else {
-        next({ name: 'ErrorNotFound' });
+        throw { name: 'ErrorNotFound' };
       }
     } catch (error) {
       next(error);
