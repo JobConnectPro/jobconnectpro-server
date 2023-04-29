@@ -1,11 +1,13 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const WorkExperienceController = require("../controllers/workExperienceController.js");
+const authentication = require('../middlewares/authentication.js');
+const authorization = require('../middlewares/authorization.js');
+const workExperienceController = require('../controllers/workExperienceController.js');
 
-router.get("/work_experience", WorkExperienceController.findAll);
-router.get("/work_experience/:id", WorkExperienceController.findOne);
-router.post("/work_experience", WorkExperienceController.create);
-router.put("/work_experience/:id", WorkExperienceController.update);
-router.delete("/work_experience/:id", WorkExperienceController.destroy);
+router.get('/work-experiences', authentication, authorization(['Seeker']), workExperienceController.findWorkExperiences);
+router.get('/work-experiences/:workExperienceId', authentication, authorization(['Seeker']), workExperienceController.findWorkExperience);
+router.post('/work-experiences', authentication, authorization(['Seeker']), workExperienceController.createWorkExperience);
+router.put('/work-experiences/:workExperienceId', authentication, authorization(['Seeker']), workExperienceController.updateWorkExperience);
+router.delete('/work-experiences/:workExperienceId', authentication, authorization(['Seeker']), workExperienceController.destroyWorkExperience);
 
 module.exports = router;
