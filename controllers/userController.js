@@ -115,7 +115,7 @@ class UserController {
       if (findUser) {
         if (req.file != null) {
           const photo = req.file.filename;
-          const file = `http://localhost:8000/uploads/photo/${photo}`;
+          const file = `http://localhost:${process.env.PORT}/uploads/photo/${photo}`;
           const data = await User.update(
             {
               photo: file,
@@ -143,7 +143,7 @@ class UserController {
       if (findUser) {
         if (req.file != null) {
           const resume = req.file.filename;
-          const file = `http://localhost:8000/uploads/resume/${resume}`;
+          const file = `http://localhost:${process.env.PORT}/uploads/resume/${resume}`;
           const data = await User.update(
             {
               resume: file,

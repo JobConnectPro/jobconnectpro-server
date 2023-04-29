@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authentication = require('../middlewares/authentication.js');
 const authorization = require('../middlewares/authorization.js');
-const educationController = require('../controllers/educationsController.js');
+const educationController = require('../controllers/educationController.js');
 
 router.get('/educations', authentication, authorization(['Seeker']), educationController.findEducations);
 router.get('/educations/:educationId', authentication, authorization(['Seeker']), educationController.findEducation);
