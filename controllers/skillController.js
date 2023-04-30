@@ -3,7 +3,7 @@ const { Skill } = require('../models');
 class SkillController {
   static async findSkills(req, res, next) {
     try {
-      const data = await Skill.findAll();
+      const data = await Skill.findAll({order: [['skill', 'ASC']]});
 
       if (data) {
         res.status(200).json(data);

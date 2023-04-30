@@ -7,6 +7,7 @@ class ProjectController {
 
       const data = await Project.findAll({
         where: { user_id: id },
+        order: [['start_date', 'ASC']],
       });
 
       if (data) {

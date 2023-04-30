@@ -4,6 +4,7 @@ class CompanyController {
   static async findCompanies(req, res, next) {
     try {
       const data = await Company.findAll({
+        order: [['company_name', 'ASC']],
         include: [
           {
             model: Sector,

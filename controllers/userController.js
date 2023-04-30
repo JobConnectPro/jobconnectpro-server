@@ -7,7 +7,11 @@ class UserController {
   // get all user
   static async findUsers(req, res, next) {
     try {
-      const data = await User.findAll();
+      const limit = req.query.limit || 10;
+      const page = req.query.page || 1;
+      const offset = (page - 1) * limit;
+
+      const data = await User.findAll({ limit, offset, order: [['role', 'ASC']] });
       res.status(200).json(data);
     } catch (error) {
       next(error);
@@ -43,6 +47,13 @@ class UserController {
           {
             model: Project,
           },
+        ],
+        order: [
+          [WorkExperience, 'start_date', 'ASC'],
+          [Education, 'start_date', 'ASC'],
+          [Achievement, 'date', 'ASC'],
+          [Organization, 'start_date', 'ASC'],
+          [Project, 'start_date', 'ASC'],
         ],
       });
 
@@ -325,7 +336,13 @@ class UserController {
         where: {
           id,
         },
-        include: [{ model: Company, include: [{ model: Sector }] }],
+        include: [
+          {
+            model: Company,
+            include: [{ model: Sector }],
+          },
+        ],
+        order: [[Company, 'company_name', 'ASC']],
       });
 
       if (data) {
@@ -347,6 +364,7 @@ class UserController {
           id,
         },
         include: [{ model: Job, include: [{ model: Company }] }],
+        order: [[Job, 'createdAt', 'ASC']],
       });
 
       if (data) {
@@ -417,6 +435,13 @@ class UserController {
           {
             model: Project,
           },
+        ],
+        order: [
+          [WorkExperience, 'start_date', 'ASC'],
+          [Education, 'start_date', 'ASC'],
+          [Achievement, 'date', 'ASC'],
+          [Organization, 'start_date', 'ASC'],
+          [Project, 'start_date', 'ASC'],
         ],
       });
 

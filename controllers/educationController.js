@@ -8,6 +8,7 @@ class EducationController {
       const data = await Education.findAll({
         where: { user_id: id },
         include: [{ model: Attainment }],
+        order: [['start_date', 'ASC']]
       });
 
       if (data) {

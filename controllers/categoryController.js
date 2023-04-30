@@ -4,7 +4,7 @@ const { Op } = require('sequelize');
 class CategoryController {
   static async findCategories(req, res, next) {
     try {
-      const data = await Category.findAll();
+      const data = await Category.findAll({order: [['category', 'ASC']]});
 
       if (data) {
         res.status(200).json(data);
