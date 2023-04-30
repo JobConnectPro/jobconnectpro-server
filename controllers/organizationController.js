@@ -7,6 +7,7 @@ class OrganizationController {
 
       const data = await Organization.findAll({
         where: { user_id: id },
+        order: [['start_date', 'ASC']]
       });
 
       if (data) {

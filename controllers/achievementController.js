@@ -7,6 +7,7 @@ class AchievementController {
 
       const data = await Achievement.findAll({
         where: { user_id: id },
+        order: [['date', 'ASC']]
       });
 
       if (data) {

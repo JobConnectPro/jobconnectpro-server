@@ -7,6 +7,7 @@ class WorkExperienceController {
 
       const data = await WorkExperience.findAll({
         where: { user_id: id },
+        order: [['start_date', 'ASC']]
       });
 
       if (data) {

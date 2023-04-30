@@ -3,7 +3,7 @@ const { Attainment } = require('../models');
 class AttainmentController {
   static async findAttainments(req, res, next) {
     try {
-      const data = await Attainment.findAll();
+      const data = await Attainment.findAll({ order: [['attainment', 'ASC']] });
 
       if (data) {
         res.status(200).json(data);

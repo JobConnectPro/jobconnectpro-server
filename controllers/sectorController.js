@@ -3,7 +3,7 @@ const { Sector } = require('../models');
 class SectorController {
   static async findSectors(req, res, next) {
     try {
-      const data = await Sector.findAll();
+      const data = await Sector.findAll({ order: [['sector', 'ASC']] });
 
       if (data) {
         res.status(200).json(data);
