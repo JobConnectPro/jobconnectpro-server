@@ -56,7 +56,9 @@ class CategoryController {
 
       if (findCategory) {
         const data = await Category.update({ category }, { where: { id: categoryId } });
-        res.status(200).json({ message: 'Successfully update category!' });
+        res.status(200).json({ 
+          message: 'Successfully update category!'
+        });
       } else {
         throw { name: 'ErrorNotFound' };
       }
@@ -92,11 +94,16 @@ class CategoryController {
           },
         },
       });
-      res.json(categories);
+      if (categories.length) {
+        res.json(categories);
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
     } catch (error) {
       next(error);
     }
   }
+  
 }
 
 module.exports = CategoryController;
