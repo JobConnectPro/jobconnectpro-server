@@ -93,7 +93,7 @@ class EducationController {
             },
           }
         );
-        res.status(201).json({ message: 'Successfully update education!' });
+        res.status(200).json({ message: 'Successfully update education!' });
       } else {
         throw { name: 'ErrorNotFound' };
       }

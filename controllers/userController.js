@@ -77,7 +77,7 @@ class UserController {
           },
           { where: { id } }
         );
-        res.status(201).json({ message: 'Successfully update data!' });
+        res.status(200).json({ message: 'Successfully update data!' });
       } else {
         throw { name: 'ErrorNotFound' };
       }
@@ -97,7 +97,7 @@ class UserController {
       if (findUser) {
         const hashPassword = await bcrypt.hash(password, 10);
         const data = await User.update({ password: hashPassword }, { where: { id } });
-        res.status(201).json({ message: 'Successfully update password!' });
+        res.status(200).json({ message: 'Successfully update password!' });
       } else {
         throw { name: 'ErrorNotFound' };
       }
@@ -124,7 +124,7 @@ class UserController {
           );
           res.status(200).json({ message: 'Successfully update photo!' });
         } else {
-          res.status(404).json({ message: 'Photo cannot be null!' });
+          res.status(400).json({ message: 'Photo cannot be null!' });
         }
       } else {
         throw { name: 'ErrorNotFound' };
@@ -152,7 +152,7 @@ class UserController {
           );
           res.status(200).json({ message: 'Successfully update resume!' });
         } else {
-          res.status(404).json({ message: 'Resume cannot be null!' });
+          res.status(400).json({ message: 'Resume cannot be null!' });
         }
       } else {
         throw { name: 'ErrorNotFound' };
@@ -197,7 +197,7 @@ class UserController {
       });
 
       if (findApplication) {
-        res.status(200).json({ message: 'Already apply job!' });
+        res.status(400).json({ message: 'Already apply job!' });
       } else {
         const data = await Application.create({
           user_id: id,
@@ -274,7 +274,7 @@ class UserController {
       });
 
       if (findBookmark) {
-        res.status(200).json({ message: 'Already bookmark job!' });
+        res.status(400).json({ message: 'Already bookmark job!' });
       } else {
         const data = await Bookmark.create({
           user_id: id,
@@ -321,7 +321,7 @@ class UserController {
   static async findUserCompany(req, res, next) {
     try {
       const { id } = req.userLogged;
-      const data = await User.findOne({
+      const data = await User.findAll({
         where: {
           id,
         },
@@ -455,7 +455,7 @@ class UserController {
             },
           }
         );
-        res.status(201).json({ message: 'Successfully update status!' });
+        res.status(200).json({ message: 'Successfully update status!' });
       } else {
         throw { name: 'ErrorNotFound' };
       }
@@ -478,7 +478,7 @@ class UserController {
       });
 
       if (findSkill) {
-        res.status(200).json({ message: 'Already add skill!' });
+        res.status(400).json({ message: 'Already add skill!' });
       } else {
         const data = await UserSkill.create({
           user_id: id,

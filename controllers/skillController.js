@@ -57,7 +57,7 @@ class SkillController {
 
       if (findSkill) {
         const data = await Skill.update({ skill }, { where: { id: skillId } });
-        res.status(201).json({ message: 'Successfully update skill!' });
+        res.status(200).json({ message: 'Successfully update skill!' });
       } else {
         throw { name: 'ErrorNotFound' };
       }

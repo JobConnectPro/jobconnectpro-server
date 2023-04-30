@@ -78,7 +78,7 @@ class AchievementController {
             where: { id: achievementId, user_id: id },
           }
         );
-        res.status(201).json({
+        res.status(200).json({
           message: 'Successfully update achievement!',
         });
       } else {

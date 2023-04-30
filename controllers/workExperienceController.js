@@ -84,7 +84,7 @@ class WorkExperienceController {
           },
           { where: { id: workExperienceId, user_id: id } }
         );
-        res.status(201).json({
+        res.status(200).json({
           message: 'Successfully update work experience!',
         });
       } else {

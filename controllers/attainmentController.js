@@ -60,7 +60,7 @@ class AttainmentController {
           },
           { where: { id: attainmentId } }
         );
-        res.status(201).json({ message: 'Successfully update attainment!' });
+        res.status(200).json({ message: 'Successfully update attainment!' });
       } else {
         throw { name: 'ErrorNotFound' };
       }

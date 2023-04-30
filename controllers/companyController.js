@@ -65,7 +65,7 @@ class CompanyController {
 
       const data = await Company.create({
         user_id: id,
-        sector_id,
+        sector_id: +sector_id,
         company_name,
         address,
         description,
@@ -109,7 +109,7 @@ class CompanyController {
             },
           }
         );
-        res.status(201).json({ message: 'Successfully update company!' });
+        res.status(200).json({ message: 'Successfully update company!' });
       } else {
         throw { name: 'ErrorNotFound' };
       }
@@ -123,26 +123,29 @@ class CompanyController {
       const { id } = req.userLogged;
       const { companyId } = req.params;
 
-      const logo = req.file.filename;
-      const file = `http://localhost:${process.env.PORT}/uploads/logo/${logo}`;
-
       const findCompany = await Company.findOne({
         where: { id: companyId, user_id: id },
       });
 
       if (findCompany) {
-        const data = await Company.update(
-          {
-            logo: file,
-          },
-          {
-            where: {
-              id: companyId,
-              user_id: id,
+        if (req.file != null) {
+          const logo = req.file.filename;
+          const file = `http://localhost:${process.env.PORT}/uploads/logo/${logo}`;
+          const data = await Company.update(
+            {
+              logo: file,
             },
-          }
-        );
-        res.status(201).json({ message: 'Successfully update logo!' });
+            {
+              where: {
+                id: companyId,
+                user_id: id,
+              },
+            }
+          );
+          res.status(200).json({ message: 'Successfully update logo!' });
+        } else {
+          res.status(400).json({ message: 'Logo cannot be null!' });
+        }
       } else {
         throw { name: 'ErrorNotFound' };
       }
