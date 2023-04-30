@@ -1,3 +1,4 @@
+
 const { Job, Category, Company, Sector } = require('../models');
 
 class JobController {
@@ -50,55 +51,56 @@ class JobController {
   }
 
   static async createJob(req, res) {
-    const { title, description, categories, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience } = req.body;
+  const { title, description, categories, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience } = req.body;
 
-    const userId = req.userLogged.id;
+  const userId = req.userLogged.id;
 
-    try {
-      const company = await Company.findOne({
-        where: { user_id: userId },
-      });
+  try {
+    const company = await Company.findOne({
+      where: { user_id: userId },
+    });
 
-      if (!company) {
-        return res.status(404).json({ message: 'Company Not Found' });
-      }
-
-      const job = await Job.create({
-        user_id: userId,
-        company_id: company.id,
-        title,
-        description,
-        requirement,
-        job_level,
-        minimum_salary,
-        maximum_salary,
-        type,
-        location,
-        starting_date,
-        minimum_experience,
-      });
-
-      if (categories && categories.length > 0) {
-        const categoriesInstance = await Category.findAll({
-          where: { category: categories },
-        });
-        await job.addCategories(categoriesInstance);
-      }
-
-      res.status(201).json({
-        message: 'job created',
-        fullField: {
-          data: job,
-          company: {
-            companyName: company.company_name,
-          },
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).send('Internal Server Error');
+    if (!company) {
+      return res.status(404).json({ message: 'Company Not Found' });
     }
+
+    const job = await Job.create({
+      user_id: userId,
+      company_id: company.id,
+      title,
+      description,
+      requirement,
+      job_level,
+      minimum_salary,
+      maximum_salary,
+      type,
+      location,
+      starting_date,
+      minimum_experience,
+    });
+
+    if (categories && categories.length > 0) {
+      const categoriesInstance = await Category.findAll({
+        where: { category: categories },
+      });
+      await job.setJobCategories(categoriesInstance); //mengganti addCategories menjadi setJobCategories di karenakan pada relasinya menggunakan as jobCategories
+    }
+
+    res.status(201).json({
+      message: 'Job Created',
+      fullField: {
+        data: job,
+        company: {
+          companyName: company.company_name,
+        },
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Internal Server Error');
   }
+}
+
 
   static async updateJob(req, res) {
     const { jobId } = req.params;
