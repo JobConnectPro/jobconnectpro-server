@@ -82,7 +82,7 @@ class ProjectController {
             where: { id: projectId, user_id: id },
           }
         );
-        res.status(201).json({
+        res.status(200).json({
           message: 'Successfully update project!',
         });
       } else {

@@ -5,7 +5,7 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.name === 'ErrorNotFound') {
     res.status(404).json({ message: 'Error not found!' });
   } else if (err.name === 'ValidationFailed') {
-    res.status(404).json({ message: 'Validation failed!' });
+    res.status(400).json({ message: 'Data already exist!' });
   } else if (err.name === 'UserExist') {
     res.status(400).json({ message: 'User already exist!' });
   } else {

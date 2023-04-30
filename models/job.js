@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Job.belongsToMany(models.Category, {
         through: models.JobCategory,
+        as: 'JobCategories',
         foreignKey: 'job_id',
       });
 

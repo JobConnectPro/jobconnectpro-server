@@ -57,7 +57,7 @@ class SectorController {
 
       if (findSector) {
         const data = await Sector.update({ sector }, { where: { id: sectorId } });
-        res.status(201).json({ message: 'Successfully update sector!' });
+        res.status(200).json({ message: 'Successfully update sector!' });
       } else {
         throw { name: 'ErrorNotFound' };
       }
