@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notEmpty: true,
-          len: [1, 255],
+          len: [1, 10000],
         },
       },
       requirement: {
@@ -77,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notEmpty: true,
-          len: [1, 255],
+          len: [1, 10000],
         },
       },
       job_level: {
