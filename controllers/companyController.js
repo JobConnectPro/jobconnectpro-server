@@ -1,9 +1,25 @@
 require('dotenv').config();
 const { Company, Sector, Job, User } = require('../models');
+const { Op } = require('sequelize');
+
 class CompanyController {
   static async findCompanies(req, res, next) {
     try {
+      const { company_name } = req.query;
+      const where = {};
+
+      const limit = req.query.limit || 10;
+      const page = req.query.page || 1;
+      const offset = (page - 1) * limit;
+
+      if (company_name) {
+        where.company_name = { [Op.iLike]: `%${company_name}%` };
+      }
+
       const data = await Company.findAll({
+        where,
+        limit,
+        offset,
         order: [['company_name', 'ASC']],
         include: [
           {
