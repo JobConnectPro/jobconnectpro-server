@@ -2,6 +2,7 @@ require('dotenv').config();
 const { User, Company, WorkExperience, Skill, Education, Project, Organization, Achievement, Attainment, Application, Bookmark, Job, UserSkill, Sector } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const sendMail = require('../email');
 
 class UserController {
   // get all user
@@ -465,6 +466,15 @@ class UserController {
           user_id: userId,
           job_id: jobId,
         },
+        include: [
+          {
+            model: Job,
+            include: [Company],
+          },
+          {
+            model: User,
+          },
+        ],
       });
 
       if (findApplication) {
@@ -481,6 +491,16 @@ class UserController {
           }
         );
         res.status(200).json({ message: 'Successfully update status!' });
+
+        const emailData = {
+          name: findApplication.User.name,
+          email: findApplication.User.email,
+          title: findApplication.Job.title,
+          company: findApplication.Job.Company.company_name,
+          status: findApplication.status,
+          description: findApplication.description,
+        };
+        await sendMail(emailData);
       } else {
         throw { name: 'ErrorNotFound' };
       }
