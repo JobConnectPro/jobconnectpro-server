@@ -8,15 +8,15 @@ class CompanyController {
       const { company_name } = req.query;
       const where = {};
 
-      const limit = req.query.limit || 10;
-      const page = req.query.page || 1;
+      const limit = +req.query.limit || 10;
+      const page = +req.query.page || 1;
       const offset = (page - 1) * limit;
 
       if (company_name) {
         where.company_name = { [Op.iLike]: `%${company_name}%` };
       }
 
-      const data = await Company.findAll({
+      const { count, rows } = await Company.findAndCountAll({
         where,
         limit,
         offset,
@@ -31,11 +31,12 @@ class CompanyController {
         ],
       });
 
-      if (data) {
-        res.status(200).json(data);
-      } else {
-        throw { name: 'ErrorNotFound' };
-      }
+      res.status(200).json({
+        totalItems: count,
+        data: rows,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+      });
     } catch (error) {
       next(error);
     }
