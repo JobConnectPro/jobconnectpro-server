@@ -14,13 +14,24 @@ module.exports = {
      */
     await queryInterface.bulkInsert('Projects', [
       {
-        user_id: 1,
+        user_id: 3,
         project_name: 'Develop Rakamin App',
         role: 'Project Manager',
-        link: 'www.rakamin.com',
+        link: 'https://www.rakamin.com/',
         start_date: '2020-01-01',
         end_date: '2020-08-01',
         description: 'Develop Rakamin App with Express JS dan Next JS',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        user_id: 3,
+        project_name: 'Calculator App',
+        role: 'Front End Developer',
+        link: 'https://www.calculator.com/',
+        start_date: '2021-04-01',
+        end_date: '2021-08-05',
+        description: 'Front End Developer Calculator App',
         createdAt: new Date(),
         updatedAt: new Date(),
       },

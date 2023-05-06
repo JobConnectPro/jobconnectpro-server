@@ -18,6 +18,41 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        skill: 'React JS',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        skill: 'Next JS',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        skill: 'MySQL',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        skill: 'PostgreSQL',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        skill: 'Java',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        skill: 'PHP',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        skill: 'Laravel',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 

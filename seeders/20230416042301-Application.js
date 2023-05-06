@@ -14,10 +14,18 @@ module.exports = {
      */
     await queryInterface.bulkInsert('Applications', [
       {
-        user_id: 1,
+        user_id: 3,
         job_id: 1,
         status: 'Application being reviewed',
-        description: 'Application being reviewed',
+        description: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        user_id: 3,
+        job_id: 2,
+        status: 'Application being reviewed',
+        description: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       },

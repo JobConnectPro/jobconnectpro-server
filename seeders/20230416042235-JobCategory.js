@@ -15,7 +15,19 @@ module.exports = {
     await queryInterface.bulkInsert('JobCategories', [
       {
         job_id: 1,
-        category_id: 1,
+        category_id: 3,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        job_id: 2,
+        category_id: 3,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        job_id: 3,
+        category_id: 3,
         createdAt: new Date(),
         updatedAt: new Date(),
       },

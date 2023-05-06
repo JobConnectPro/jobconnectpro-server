@@ -14,13 +14,24 @@ module.exports = {
      */
     await queryInterface.bulkInsert('Education', [
       {
-        user_id: 1,
-        attainment_id: 1,
+        user_id: 3,
+        attainment_id: 3,
+        school: 'SMA Negeri 5 Surabaya',
+        major: 'IPA',
+        description: 'Siswa Terbaik',
+        start_date: '2017-01-01',
+        end_date: '2019-01-01',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        user_id: 3,
+        attainment_id: 9,
         school: 'Universitas Brawijaya',
         major: 'Sistem Informasi',
-        description: 'Menjalankan tugas dengan baik',
+        description: 'Lulus dengan IPK 4.00 dan Cumlaude',
         start_date: '2020-01-01',
-        end_date: '2020-08-01',
+        end_date: '2023-01-01',
         createdAt: new Date(),
         updatedAt: new Date(),
       },

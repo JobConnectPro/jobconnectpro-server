@@ -18,6 +18,26 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        category: 'Supply Chain',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        category: 'IT and Software',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        category: 'Customer Service',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        category: 'Accounting and Finance',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 

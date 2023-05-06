@@ -14,12 +14,22 @@ module.exports = {
      */
     await queryInterface.bulkInsert('Organizations', [
       {
-        user_id: 1,
-        organization: 'Eksekutif Mahasiswa Universitas Brawijaya',
+        user_id: 3,
+        organization: 'BEM FILKOM UB 2020',
         role: 'Menteri Advokesma',
-        start_date: '2020-01-01',
+        start_date: '2020-04-01',
         end_date: '2020-08-01',
-        description: 'Menjalankan tugas dengan baik',
+        description: 'Menteri Advokesma BEM FILKOM UB 2020',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        user_id: 3,
+        organization: 'EM UB 2021',
+        role: 'Menteri PSDM',
+        start_date: '2020-09-01',
+        end_date: '2020-12-01',
+        description: 'Menteri PSDM EM UB 2021',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
