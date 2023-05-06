@@ -18,6 +18,26 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        sector: 'Financial Services',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        sector: 'Non-Profit / Volunteering',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        sector: 'Printing and Packaging',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        sector: 'Veterinary',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 
