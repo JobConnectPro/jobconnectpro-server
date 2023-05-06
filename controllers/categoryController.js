@@ -4,7 +4,7 @@ const { Op } = require('sequelize');
 class CategoryController {
   static async findCategories(req, res, next) {
     try {
-      const data = await Category.findAll({order: [['category', 'ASC']]});
+      const data = await Category.findAll({ order: [['category', 'ASC']] });
 
       if (data) {
         res.status(200).json(data);
@@ -56,8 +56,8 @@ class CategoryController {
 
       if (findCategory) {
         const data = await Category.update({ category }, { where: { id: categoryId } });
-        res.status(200).json({ 
-          message: 'Successfully update category!'
+        res.status(200).json({
+          message: 'Successfully update category!',
         });
       } else {
         throw { name: 'ErrorNotFound' };
@@ -83,27 +83,6 @@ class CategoryController {
       next(error);
     }
   }
-
-  static async searchCategories(req, res, next) {
-    const { q } = req.query;
-    try {
-      const categories = await Category.findAll({
-        where: {
-          category: {
-            [Op.iLike]: `%${q}%`,
-          },
-        },
-      });
-      if (categories.length) {
-        res.json(categories);
-      } else {
-        throw { name: 'ErrorNotFound' };
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
-  
 }
 
 module.exports = CategoryController;
