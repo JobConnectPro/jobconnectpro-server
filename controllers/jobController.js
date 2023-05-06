@@ -24,11 +24,11 @@ class JobController {
       const page = +req.query.page || 1;
       const offset = (page - 1) * limit;
 
-      const {count, rows} = await Job.findAndCountAll({
+      const { count, rows } = await Job.findAndCountAll({
         where,
         limit,
         offset,
-        order : [['createdAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
         include: [
           {
             model: Company,
@@ -41,10 +41,10 @@ class JobController {
         ],
       });
       res.status(200).json({
-        totalItems : count,
-        data : rows,
-        currentPage : page,
-        totalPages : Math.ceil(count/limit)
+        totalItems: count,
+        data: rows,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
       });
     } catch (error) {
       next(error);
@@ -84,49 +84,52 @@ class JobController {
     try {
       const userId = req.userLogged.id;
       const { title, company_id, description, categoryIds, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience, status } = req.body;
-  
+
       const company = await Company.findOne({
-        where: { id: company_id }
+        where: { id: company_id },
       });
       if (!company) {
         return res.status(404).json({ message: 'Company not found!' });
       }
-  
+
       if (!categoryIds || categoryIds.length === 0) {
-        return res.status(400).json({ message: 'Category ID must be provided!' });
+        return res.status(400).json({ message: 'Category must be provided!' });
       }
-  
+
       const categoriesInstance = await Category.findAll({
-        where: { id: categoryIds},
+        where: { id: categoryIds },
         transaction: t,
       });
-  
+
       if (!categoriesInstance || categoriesInstance.length === 0) {
         return res.status(404).json({
-          message: 'Category Not Found'
-        })
+          message: 'Category not found!',
+        });
       }
-  
-      const job = await Job.create({
-        user_id: userId,
-        company_id: company.id,
-        title,
-        description,
-        requirement,
-        job_level,
-        minimum_salary,
-        maximum_salary,
-        type,
-        location,
-        starting_date,
-        minimum_experience,
-        status
-      }, { transaction: t });
-  
+
+      const job = await Job.create(
+        {
+          user_id: userId,
+          company_id: company.id,
+          title,
+          description,
+          requirement,
+          job_level,
+          minimum_salary,
+          maximum_salary,
+          type,
+          location,
+          starting_date,
+          minimum_experience,
+          status,
+        },
+        { transaction: t }
+      );
+
       await job.setJobCategories(categoriesInstance, { transaction: t });
-  
+
       await t.commit();
-  
+
       res.status(201).json({
         message: 'Successfully create job!',
         fullField: {
@@ -134,7 +137,7 @@ class JobController {
           company: {
             companyName: company.company_name,
           },
-          categories: categoriesInstance.map(category => ({ 
+          categories: categoriesInstance.map((category) => ({
             categoryId: category.id,
           })),
         },
@@ -144,8 +147,6 @@ class JobController {
       next(error);
     }
   }
-  
-  
 
   static async updateJob(req, res, next) {
     const t = await sequelize.transaction();
@@ -153,61 +154,64 @@ class JobController {
       const { id } = req.userLogged;
       const { jobId } = req.params;
       const { title, company_id, description, categoryIds, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience, status } = req.body;
-  
+
       const job = await Job.findOne({ where: { id: jobId, user_id: id } });
-  
+
       if (!job) {
         return res.status(404).json({ message: 'Job not found!' });
       }
-  
+
       if (company_id) {
         const company = await Company.findOne({ where: { id: company_id } });
-  
+
         if (!company) {
           return res.status(404).json({ message: 'Company not found!' });
         }
-  
+
         await job.update({ company_id: company.id }, { transaction: t });
       }
-  
-      const updatedJob = await job.update({
-        title,
-        description,
-        requirement,
-        job_level,
-        minimum_salary,
-        maximum_salary,
-        type,
-        location,
-        starting_date,
-        minimum_experience,
-        status
-      }, { transaction: t });
-  
+
+      const updatedJob = await job.update(
+        {
+          title,
+          description,
+          requirement,
+          job_level,
+          minimum_salary,
+          maximum_salary,
+          type,
+          location,
+          starting_date,
+          minimum_experience,
+          status,
+        },
+        { transaction: t }
+      );
+
       if (!categoryIds || categoryIds.length === 0) {
-        return res.status(400).json({message: 'Category ID must be provided!' });
+        return res.status(400).json({ message: 'Category must be provided!' });
       }
-  
+
       const categoriesInstance = await Category.findAll({
-        where: { id: categoryIds},
+        where: { id: categoryIds },
         transaction: t,
       });
-  
+
       if (!categoriesInstance || categoriesInstance.length === 0) {
         return res.status(404).json({
-          message: 'Category Not Found'
-        })
+          message: 'Category not found!',
+        });
       }
-  
+
       await updatedJob.setJobCategories(categoriesInstance, { transaction: t });
-  
+
       await t.commit();
-  
+
       res.status(200).json({
         message: 'Successfully update job!',
         fullField: {
           data: updatedJob,
-          categories: categoriesInstance.map(category => ({ 
+          categories: categoriesInstance.map((category) => ({
             categoryId: category.id,
           })),
         },
@@ -238,6 +242,3 @@ class JobController {
 }
 
 module.exports = JobController;
-
-
-
