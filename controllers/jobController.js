@@ -83,23 +83,23 @@ class JobController {
     const t = await sequelize.transaction();
     try {
       const userId = req.userLogged.id;
-      const { title, company_id, description, categories, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience , status } = req.body;
+      const { title, company_id, description, categoryIds, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience, status } = req.body;
   
       const company = await Company.findOne({
-        where: { id: company_id}
-        
+        where: { id: company_id }
       });
       if (!company) {
         return res.status(404).json({ message: 'Company not found!' });
       }
   
-      if (!categories || categories.length === 0) {
-        return res.status(400).json({message: 'Categories must be provided!' });
+      if (!categoryIds || categoryIds.length === 0) {
+        return res.status(400).json({ message: 'Category ID must be provided!' });
       }
   
       const categoriesInstance = await Category.findAll({
-        where: { category: categories },
-      }, { transaction: t });
+        where: { id: categoryIds},
+        transaction: t,
+      });
   
       if (!categoriesInstance || categoriesInstance.length === 0) {
         return res.status(404).json({
@@ -123,7 +123,7 @@ class JobController {
         status
       }, { transaction: t });
   
-      await job.addJobCategories(categoriesInstance, { transaction: t });
+      await job.setJobCategories(categoriesInstance, { transaction: t });
   
       await t.commit();
   
@@ -134,9 +134,9 @@ class JobController {
           company: {
             companyName: company.company_name,
           },
-          category: {
-            categoryName: categories,
-          },
+          categories: categoriesInstance.map(category => ({ 
+            categoryId: category.id,
+          })),
         },
       });
     } catch (error) {
@@ -144,13 +144,15 @@ class JobController {
       next(error);
     }
   }
+  
+  
 
   static async updateJob(req, res, next) {
     const t = await sequelize.transaction();
     try {
       const { id } = req.userLogged;
       const { jobId } = req.params;
-      const { title, company_id, description, categories, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience, status } = req.body;
+      const { title, company_id, description, categoryIds, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience, status } = req.body;
   
       const job = await Job.findOne({ where: { id: jobId, user_id: id } });
   
@@ -182,13 +184,14 @@ class JobController {
         status
       }, { transaction: t });
   
-      if (!categories || categories.length === 0) {
-        return res.status(400).json({message: 'Categories must be provided!' });
+      if (!categoryIds || categoryIds.length === 0) {
+        return res.status(400).json({message: 'Category ID must be provided!' });
       }
   
       const categoriesInstance = await Category.findAll({
-        where: { category: categories },
-      }, { transaction: t });
+        where: { id: categoryIds},
+        transaction: t,
+      });
   
       if (!categoriesInstance || categoriesInstance.length === 0) {
         return res.status(404).json({
@@ -202,17 +205,18 @@ class JobController {
   
       res.status(200).json({
         message: 'Successfully update job!',
-        updatedData: updatedJob,
+        fullField: {
+          data: updatedJob,
+          categories: categoriesInstance.map(category => ({ 
+            categoryId: category.id,
+          })),
+        },
       });
     } catch (error) {
       await t.rollback();
       next(error);
     }
   }
-  
-  
-  
-  
 
   static async destroyJob(req, res, next) {
     try {
