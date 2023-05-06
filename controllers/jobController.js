@@ -102,7 +102,7 @@ class JobController {
       }, { transaction: t });
   
       if (!categoriesInstance || categoriesInstance.length === 0) {
-        return res.status(400).json({
+        return res.status(404).json({
           message: 'Category Not Found'
         })
       }
@@ -144,8 +144,6 @@ class JobController {
       next(error);
     }
   }
-  
-
 
   static async updateJob(req, res, next) {
     const t = await sequelize.transaction();
@@ -193,7 +191,9 @@ class JobController {
       }, { transaction: t });
   
       if (!categoriesInstance || categoriesInstance.length === 0) {
-        throw { name: 'ErrorNotFound' };
+        return res.status(404).json({
+          message: 'Category Not Found'
+        })
       }
   
       await updatedJob.setJobCategories(categoriesInstance, { transaction: t });
