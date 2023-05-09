@@ -686,6 +686,7 @@ class UserController {
           res.status(200).json({
             token,
             role: findUser.role,
+            id: findUser.id,
           });
         } else {
           throw { name: 'WrongPassword' };
