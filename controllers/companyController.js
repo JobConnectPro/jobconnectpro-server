@@ -42,6 +42,33 @@ class CompanyController {
     }
   }
 
+  static async findCompanyUserId(req, res, next) {
+    try {
+      const { id } = req.userLogged;
+      const { company_name } = req.query;
+
+      const where = { user_id: id };
+      if (company_name) {
+        where.company_name = { [Op.iLike]: `%${company_name}%` };
+      }
+
+      const companies = await Company.findAll({
+        where,
+        include: [
+          {
+            model: Sector,
+          },
+          {
+            model: User,
+          },
+        ],
+      });
+      res.status(200).json(companies);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async findCompany(req, res, next) {
     try {
       const { companyId } = req.params;
@@ -76,7 +103,8 @@ class CompanyController {
   static async createCompany(req, res, next) {
     try {
       const { id } = req.userLogged;
-      const { sector_id, company_name, address, description, website } = req.body;
+      const { sector_id, company_name, address, description, website } =
+        req.body;
 
       const logo = req.file.filename;
       const file = `http://localhost:${process.env.PORT}/uploads/logo/${logo}`;
@@ -92,7 +120,10 @@ class CompanyController {
       });
 
       if (data) {
-        res.status(201).json({ ...data.dataValues, message: 'Successfully create company!' });
+        res.status(201).json({
+          ...data.dataValues,
+          message: 'Successfully create company!',
+        });
       } else {
         throw { name: 'ValidationFailed' };
       }
@@ -105,7 +136,8 @@ class CompanyController {
     try {
       const { id } = req.userLogged;
       const { companyId } = req.params;
-      const { sector_id, company_name, address, description, website } = req.body;
+      const { sector_id, company_name, address, description, website } =
+        req.body;
 
       const findCompany = await Company.findOne({
         where: { id: companyId, user_id: id },
