@@ -1,5 +1,20 @@
 require('dotenv').config();
-const { User, Company, WorkExperience, Skill, Education, Project, Organization, Achievement, Attainment, Application, Bookmark, Job, UserSkill, Sector } = require('../models');
+const {
+  User,
+  Company,
+  WorkExperience,
+  Skill,
+  Education,
+  Project,
+  Organization,
+  Achievement,
+  Attainment,
+  Application,
+  Bookmark,
+  Job,
+  UserSkill,
+  Sector,
+} = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sendMail = require('../email');
@@ -12,7 +27,11 @@ class UserController {
       const page = req.query.page || 1;
       const offset = (page - 1) * limit;
 
-      const data = await User.findAll({ limit, offset, order: [['role', 'ASC']] });
+      const data = await User.findAll({
+        limit,
+        offset,
+        order: [['role', 'ASC']],
+      });
       res.status(200).json(data);
     } catch (error) {
       next(error);
@@ -72,7 +91,15 @@ class UserController {
   static async updateUser(req, res, next) {
     try {
       const { id } = req.userLogged;
-      const { name, birthday, gender, phone, address, summary, salary_expectation } = req.body;
+      const {
+        name,
+        birthday,
+        gender,
+        phone,
+        address,
+        summary,
+        salary_expectation,
+      } = req.body;
 
       const findUser = await User.findOne({ where: { id } });
 
@@ -108,7 +135,10 @@ class UserController {
 
       if (findUser) {
         const hashPassword = await bcrypt.hash(password, 10);
-        const data = await User.update({ password: hashPassword }, { where: { id } });
+        const data = await User.update(
+          { password: hashPassword },
+          { where: { id } }
+        );
         res.status(200).json({ message: 'Successfully update password!' });
       } else {
         throw { name: 'ErrorNotFound' };
@@ -182,7 +212,9 @@ class UserController {
         where: {
           id,
         },
-        include: [{ model: Job, as: 'UserApplication', include: [{ model: Company }] }],
+        include: [
+          { model: Job, as: 'UserApplication', include: [{ model: Company }] },
+        ],
       });
 
       if (data) {
@@ -215,7 +247,9 @@ class UserController {
           user_id: id,
           job_id,
         });
-        res.status(201).json({ ...data.dataValues, message: 'Successfully apply job!' });
+        res
+          .status(201)
+          .json({ ...data.dataValues, message: 'Successfully apply job!' });
       }
     } catch (error) {
       next(error);
@@ -259,7 +293,9 @@ class UserController {
         where: {
           id,
         },
-        include: [{ model: Job, as: 'UserBookmark', include: [{ model: Company }] }],
+        include: [
+          { model: Job, as: 'UserBookmark', include: [{ model: Company }] },
+        ],
       });
 
       if (data) {
@@ -292,7 +328,9 @@ class UserController {
           user_id: id,
           job_id,
         });
-        res.status(201).json({ ...data.dataValues, message: 'Successfully bookmark job!' });
+        res
+          .status(201)
+          .json({ ...data.dataValues, message: 'Successfully bookmark job!' });
       }
     } catch (error) {
       next(error);
@@ -364,6 +402,7 @@ class UserController {
         where: {
           id,
         },
+        attributes: { exclude: ['password'] },
         include: [{ model: Job, include: [{ model: Company }] }],
         order: [[Job, 'createdAt', 'ASC']],
       });
@@ -380,6 +419,7 @@ class UserController {
 
   // get job applicant
   static async findJobPost(req, res, next) {
+    console.log(req.params);
     try {
       const { id } = req.userLogged;
       const { jobId } = req.params;
@@ -392,6 +432,10 @@ class UserController {
           {
             model: User,
             as: 'JobApplication',
+            attributes: { exclude: ['password'] },
+          },
+          {
+            model: Company,
           },
         ],
       });
@@ -530,7 +574,9 @@ class UserController {
           skill_id,
           level,
         });
-        res.status(201).json({ ...data.dataValues, message: 'Successfully add skill!' });
+        res
+          .status(201)
+          .json({ ...data.dataValues, message: 'Successfully add skill!' });
       }
     } catch (error) {
       next(error);
@@ -569,7 +615,8 @@ class UserController {
   // user register
   static async register(req, res, next) {
     try {
-      const { name, email, password, role, birthday, gender, phone, address } = req.body;
+      const { name, email, password, role, birthday, gender, phone, address } =
+        req.body;
 
       const uniqueEmail = await User.findOne({
         where: {
@@ -588,7 +635,9 @@ class UserController {
           phone,
           address,
         });
-        res.status(201).json({ ...data.dataValues, message: 'Successfully register!' });
+        res
+          .status(201)
+          .json({ ...data.dataValues, message: 'Successfully register!' });
       } else {
         throw { name: 'UserExist' };
       }
@@ -607,7 +656,10 @@ class UserController {
       });
 
       if (findUser) {
-        const comparePassword = await bcrypt.compare(password, findUser.password);
+        const comparePassword = await bcrypt.compare(
+          password,
+          findUser.password
+        );
         if (comparePassword) {
           const token = jwt.sign(
             {

@@ -28,7 +28,7 @@ class JobController {
         where,
         limit,
         offset,
-        order : [['createdAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
         include: [
           {
             model: Company,
@@ -40,6 +40,7 @@ class JobController {
           },
         ],
       });
+      console.log(data);
       res.status(200).json(data);
     } catch (error) {
       next(error);
@@ -77,7 +78,19 @@ class JobController {
   static async createJob(req, res, next) {
     try {
       const userId = req.userLogged.id;
-      const { title, description, categories, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience } = req.body;
+      const {
+        title,
+        description,
+        categories,
+        requirement,
+        job_level,
+        minimum_salary,
+        maximum_salary,
+        type,
+        location,
+        starting_date,
+        minimum_experience,
+      } = req.body;
 
       const company = await Company.findOne({
         where: { user_id: userId },
@@ -135,7 +148,19 @@ class JobController {
     try {
       const { id } = req.userLogged;
       const { jobId } = req.params;
-      const { title, description, categories, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience } = req.body;
+      const {
+        title,
+        description,
+        categories,
+        requirement,
+        job_level,
+        minimum_salary,
+        maximum_salary,
+        type,
+        location,
+        starting_date,
+        minimum_experience,
+      } = req.body;
 
       const job = await Job.findOne({ where: { id: jobId, user_id: id } });
 
