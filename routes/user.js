@@ -28,6 +28,10 @@ router.get('/users/job-bookmark', authentication, authorization(['Seeker']), use
 router.post('/users/job-bookmark', authentication, authorization(['Seeker']), userController.createBookmark);
 router.delete('/users/job-bookmark/:jobId', authentication, authorization(['Seeker']), userController.destroyBookmark);
 
+// employer
+router.get('/users/employer', authentication, authorization(['Seeker']), userController.findEmployers);
+router.get('/users/employer/:userId', authentication, authorization(['Seeker']), userController.findEmployerJobPosts);
+
 // user company
 router.get('/users/company', authentication, authorization(['Employer']), userController.findUserCompany);
 

@@ -14,11 +14,20 @@ module.exports = {
      */
     await queryInterface.bulkInsert('Achievements', [
       {
-        user_id: 1,
+        user_id: 3,
         title: 'Best Group Final Project',
         issuer: 'Rakamin Academy',
         date: '2020-01-01',
         description: 'Best Group Final Project Rakamin',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        user_id: 3,
+        title: 'Winner Hackathon',
+        issuer: 'Dicoding',
+        date: '2019-03-02',
+        description: 'Winner Hackathon Dicoding',
         createdAt: new Date(),
         updatedAt: new Date(),
       },

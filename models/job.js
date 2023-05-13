@@ -134,6 +134,15 @@ module.exports = (sequelize, DataTypes) => {
           isNumeric: true,
         },
       },
+      status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+          len: [1, 1],
+        },
+        defaultValue: '1',
+      },
     },
     {
       sequelize,

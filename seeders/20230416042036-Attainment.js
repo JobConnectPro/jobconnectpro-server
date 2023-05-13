@@ -14,7 +14,67 @@ module.exports = {
      */
     await queryInterface.bulkInsert('Attainments', [
       {
+        attainment: 'Less than high school',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        attainment: 'High School',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        attainment: 'Graduated from high school',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        attainment: 'Vocational course',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        attainment: 'Completed vocational course',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        attainment: 'Associate studies',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        attainment: 'Completed associate degree',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        attainment: 'Bachelor studies',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
         attainment: 'Bachelor degree graduate',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        attainment: 'Graduate studies (Master)',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        attainment: 'Master degree graduate',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        attainment: 'Post-graduate studies (Doctorate)',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        attainment: 'Doctoral degree graduate',
         createdAt: new Date(),
         updatedAt: new Date(),
       },

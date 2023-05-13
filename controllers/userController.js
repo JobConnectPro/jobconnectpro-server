@@ -23,16 +23,26 @@ class UserController {
   // get all user
   static async findUsers(req, res, next) {
     try {
-      const limit = req.query.limit || 10;
-      const page = req.query.page || 1;
+      const limit = +req.query.limit || 10;
+      const page = +req.query.page || 1;
       const offset = (page - 1) * limit;
 
+<<<<<<< HEAD
       const data = await User.findAll({
         limit,
         offset,
         order: [['role', 'ASC']],
       });
       res.status(200).json(data);
+=======
+      const { count, rows } = await User.findAndCountAll({ limit, offset, order: [['role', 'ASC']] });
+      res.status(200).json({
+        totalItems: count,
+        data: rows,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+      });
+>>>>>>> 8b5f49bd55bcbde7c18d5eb0bcc1c943b4fe38fb
     } catch (error) {
       next(error);
     }
@@ -367,6 +377,65 @@ class UserController {
     }
   }
 
+  // get all employer
+  static async findEmployers(req, res, next) {
+    try {
+      const limit = +req.query.limit || 10;
+      const page = +req.query.page || 1;
+      const offset = (page - 1) * limit;
+
+      const { count, rows } = await User.findAndCountAll({
+        where: {
+          role: 'Employer',
+        },
+        limit,
+        offset,
+        include: [
+          {
+            model: Company,
+            include: [{ model: Sector }],
+          },
+        ],
+      });
+
+      res.status(200).json({
+        totalItems: count,
+        data: rows,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // get employer jobs
+  static async findEmployerJobPosts(req, res, next) {
+    try {
+      const { userId } = req.params;
+      const data = await User.findOne({
+        where: {
+          id: userId,
+          role: 'Employer',
+        },
+        include: [
+          {
+            model: Job,
+            include: [{ model: Company, include: [{ model: Sector }] }],
+          },
+        ],
+      });
+
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // get logged user company
   static async findUserCompany(req, res, next) {
     try {
@@ -674,6 +743,7 @@ class UserController {
           res.status(200).json({
             token,
             role: findUser.role,
+            id: findUser.id,
           });
         } else {
           throw { name: 'WrongPassword' };

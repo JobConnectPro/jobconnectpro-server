@@ -14,7 +14,7 @@ module.exports = {
      */
     await queryInterface.bulkInsert('Bookmarks', [
       {
-        user_id: 1,
+        user_id: 3,
         job_id: 1,
         createdAt: new Date(),
         updatedAt: new Date(),

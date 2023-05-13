@@ -14,9 +14,23 @@ module.exports = {
      */
     await queryInterface.bulkInsert('UserSkills', [
       {
-        user_id: 1,
+        user_id: 3,
         skill_id: 1,
-        level: 'advanced',
+        level: 'Advanced',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        user_id: 3,
+        skill_id: 2,
+        level: 'Advanced',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        user_id: 3,
+        skill_id: 5,
+        level: 'Basic',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
