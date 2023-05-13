@@ -40,7 +40,12 @@ class JobController {
           },
         ],
       });
-      res.status(200).json(data);
+      res.status(200).json({
+        totalItems: count,
+        data: rows,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+      });
     } catch (error) {
       next(error);
     }
@@ -78,19 +83,7 @@ class JobController {
     const t = await sequelize.transaction();
     try {
       const userId = req.userLogged.id;
-      const {
-        title,
-        description,
-        categories,
-        requirement,
-        job_level,
-        minimum_salary,
-        maximum_salary,
-        type,
-        location,
-        starting_date,
-        minimum_experience,
-      } = req.body;
+      const { title, description, categoryIds, company_id, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience } = req.body;
 
       const company = await Company.findOne({
         where: { id: company_id },
@@ -128,7 +121,6 @@ class JobController {
           location,
           starting_date,
           minimum_experience,
-          status,
         },
         { transaction: t }
       );
@@ -160,19 +152,7 @@ class JobController {
     try {
       const { id } = req.userLogged;
       const { jobId } = req.params;
-      const {
-        title,
-        description,
-        categories,
-        requirement,
-        job_level,
-        minimum_salary,
-        maximum_salary,
-        type,
-        location,
-        starting_date,
-        minimum_experience,
-      } = req.body;
+      const { title, description, company_id, categoryIds, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience, status } = req.body;
 
       const job = await Job.findOne({ where: { id: jobId, user_id: id } });
 
