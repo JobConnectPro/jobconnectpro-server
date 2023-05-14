@@ -5,13 +5,13 @@ const authentication = require('../middlewares/authentication.js');
 const resumeUpload = require('../middlewares/multerResume.js');
 const photoUpload = require('../middlewares/multerPhoto.js');
 const authorization = require('../middlewares/authorization.js');
-const UserController = require('../controllers/userController.js');
+const userController = require('../controllers/userController.js');
 
 // auth
 router.post('/register', userController.register);
 router.post('/login', userController.login);
-router.post('/forgot-password', UserController.forgotPassword);
-router.put('/reset-password/:token', UserController.resetPassword);
+router.post('/forgot-password', userController.forgotPassword);
+router.put('/reset-password/:token', userController.resetPassword);
 
 // user profile
 router.get(
