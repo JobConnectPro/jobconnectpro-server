@@ -27,11 +27,15 @@ class UserController {
       const page = +req.query.page || 1;
       const offset = (page - 1) * limit;
 
-      const { count, rows } = await User.findAndCountAll({
+<<<<<<< HEAD
+      const data = await User.findAll({
         limit,
         offset,
         order: [['role', 'ASC']],
       });
+      res.status(200).json(data);
+=======
+      const { count, rows } = await User.findAndCountAll({ limit, offset, order: [['role', 'ASC']] });
       res.status(200).json({
         totalItems: count,
         data: rows,

@@ -40,7 +40,12 @@ class JobController {
           },
         ],
       });
-      res.status(200).json(data);
+      res.status(200).json({
+        totalItems: count,
+        data: rows,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+      });
     } catch (error) {
       next(error);
     }
@@ -80,9 +85,9 @@ class JobController {
       const userId = req.userLogged.id;
       const {
         title,
-        company_id,
         description,
         categoryIds,
+        company_id,
         requirement,
         job_level,
         minimum_salary,
@@ -163,7 +168,8 @@ class JobController {
       const {
         title,
         description,
-        categories,
+        company_id,
+        categoryIds,
         requirement,
         job_level,
         minimum_salary,
@@ -172,6 +178,7 @@ class JobController {
         location,
         starting_date,
         minimum_experience,
+        status,
       } = req.body;
 
       const job = await Job.findOne({ where: { id: jobId, user_id: id } });

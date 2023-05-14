@@ -103,8 +103,7 @@ class CompanyController {
   static async createCompany(req, res, next) {
     try {
       const { id } = req.userLogged;
-      const { sector_id, company_name, address, description, website } =
-        req.body;
+      const { sector_id, company_name, address, description, website } = req.body;
 
       const logo = req.file.filename;
       const file = `http://localhost:${process.env.PORT}/uploads/logo/${logo}`;
@@ -136,8 +135,7 @@ class CompanyController {
     try {
       const { id } = req.userLogged;
       const { companyId } = req.params;
-      const { sector_id, company_name, address, description, website } =
-        req.body;
+      const { sector_id, company_name, address, description, website } = req.body;
 
       const findCompany = await Company.findOne({
         where: { id: companyId, user_id: id },
