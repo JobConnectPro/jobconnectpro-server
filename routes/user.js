@@ -9,6 +9,8 @@ const authorization = require('../middlewares/authorization.js');
 // auth
 router.post('/register', userController.register);
 router.post('/login', userController.login);
+router.post('/forgot-password', userController.forgotPassword);
+router.put('/reset-password/:token', userController.resetPassword);
 
 // user profile
 router.get('/users', authentication, authorization(['Admin']), userController.findUsers);
