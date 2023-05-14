@@ -380,6 +380,9 @@ class UserController {
             model: Job,
             include: [{ model: Company, include: [{ model: Sector }] }],
           },
+          {
+            model: Company,
+          },
         ],
       });
 
