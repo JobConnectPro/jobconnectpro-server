@@ -91,18 +91,10 @@ module.exports = (sequelize, DataTypes) => {
       minimum_salary: {
         type: DataTypes.FLOAT,
         allowNull: true,
-        validate: {
-          isFloat: true,
-          len: [1, 255],
-        },
       },
       maximum_salary: {
         type: DataTypes.FLOAT,
         allowNull: true,
-        validate: {
-          isFloat: true,
-          len: [1, 255],
-        },
       },
       type: {
         type: DataTypes.STRING,
