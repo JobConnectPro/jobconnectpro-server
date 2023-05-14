@@ -80,8 +80,9 @@ class JobController {
       const userId = req.userLogged.id;
       const {
         title,
+        company_id,
         description,
-        categories,
+        categoryIds,
         requirement,
         job_level,
         minimum_salary,
@@ -128,7 +129,6 @@ class JobController {
           location,
           starting_date,
           minimum_experience,
-          status,
         },
         { transaction: t }
       );
