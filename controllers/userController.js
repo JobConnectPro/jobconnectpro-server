@@ -18,6 +18,8 @@ const {
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sendMail = require('../email');
+const sendMailForgotPassword = require('../email-forgot-password');
+const { where } = require('sequelize');
 
 class UserController {
   // get all user
@@ -27,15 +29,11 @@ class UserController {
       const page = +req.query.page || 1;
       const offset = (page - 1) * limit;
 
-<<<<<<< HEAD
-      const data = await User.findAll({
+      const { count, rows } = await User.findAndCountAll({
         limit,
         offset,
         order: [['role', 'ASC']],
       });
-      res.status(200).json(data);
-=======
-      const { count, rows } = await User.findAndCountAll({ limit, offset, order: [['role', 'ASC']] });
       res.status(200).json({
         totalItems: count,
         data: rows,
@@ -752,6 +750,73 @@ class UserController {
       }
     } catch (error) {
       next(error);
+    }
+  }
+
+  static async forgotPassword(req, res, next) {
+    const { email } = req.body;
+    const host = req.headers.origin;
+
+    try {
+      const findUser = await User.findOne({
+        where: { email },
+      });
+      const { id } = findUser;
+
+      if (findUser) {
+        const resetLink = jwt.sign(
+          { email: findUser.email },
+          process.env.JWT_SECRET,
+          { expiresIn: '12h' }
+        );
+        const emailData = {
+          id: findUser.id,
+          name: findUser.name,
+          email: findUser.email,
+        };
+
+        const data = await User.update(
+          {
+            resetLink,
+          },
+          { where: { id } }
+        );
+
+        sendMailForgotPassword(emailData, resetLink, host);
+        res.status(200).json({ message: 'check your email' });
+      } else {
+        throw { name: 'ErrorNotFound' };
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+  static async resetPassword(req, res, next) {
+    const { password } = req.body;
+    const resetLink = req.params.token;
+    console.log(password, resetLink);
+
+    if (resetLink) {
+      jwt.verify(resetLink, process.env.JWT_SECRET, (error, data) => {
+        if (error) {
+          res.status(401).json({ message: 'Invalid signature!' });
+        }
+      });
+    }
+
+    try {
+      const findUser = await User.findOne({ where: { resetLink } });
+      const hashPassword = await bcrypt.hash(password, 10);
+      const data = await User.update(
+        {
+          password: hashPassword,
+          resetLink: null,
+        },
+        { where: { resetLink } }
+      );
+      res.status(200).json({ message: 'Successfully update password!' });
+    } catch (err) {
+      next(err);
     }
   }
 }
