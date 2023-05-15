@@ -16,11 +16,15 @@ const sendMailForgotPassword = async (emailData, resetLink, host) => {
     from: 'Job Connect Pro',
     to: `${emailData.email}`,
     subject: `password reset`,
+<<<<<<< HEAD
     text:
       'You are receiving this email. Please click on the email for password reset ' +
       `${host}/reset-password/${resetLink}` +
       '\n\n' +
       'If you did not request this, please ignore this email',
+=======
+    text: 'You are receiving this email. Please click on the email for password reset ' + `${host}/reset-password/${resetLink}` + '\n\n' + 'If you did not request this, please ignore this email',
+>>>>>>> 23bc812ae3ac8c990e2e921c41c669280749047d
   };
 
   transporter.sendMail(mailOptions, (error, info) => {

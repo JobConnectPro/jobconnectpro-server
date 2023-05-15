@@ -19,9 +19,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sendMail = require('../email');
 const sendMailForgotPassword = require('../email-forgot-password');
-const { where } = require('sequelize');
 
-class UserController {
+class userController {
   // get all user
   static async findUsers(req, res, next) {
     try {
@@ -824,4 +823,4 @@ class UserController {
   }
 }
 
-module.exports = UserController;
+module.exports = userController;
