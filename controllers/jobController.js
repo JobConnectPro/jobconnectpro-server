@@ -148,64 +148,57 @@ class JobController {
   }
 
   static async updateJob(req, res, next) {
-    const t = await sequelize.transaction();
     try {
       const { id } = req.userLogged;
       const { jobId } = req.params;
       const { title, description, company_id, categoryIds, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience, status } = req.body;
-
+  
       const job = await Job.findOne({ where: { id: jobId, user_id: id } });
-
+  
       if (!job) {
         return res.status(404).json({ message: 'Job not found!' });
       }
-
+  
       if (company_id) {
         const company = await Company.findOne({ where: { id: company_id } });
-
+  
         if (!company) {
           return res.status(404).json({ message: 'Company not found!' });
         }
-
-        await job.update({ company_id: company.id }, { transaction: t });
+  
+        await job.update({ company_id });
       }
-
-      const updatedJob = await job.update(
-        {
-          title,
-          description,
-          requirement,
-          job_level,
-          minimum_salary,
-          maximum_salary,
-          type,
-          location,
-          starting_date,
-          minimum_experience,
-          status,
-        },
-        { transaction: t }
-      );
-
-      if (!categoryIds || categoryIds.length === 0) {
-        return res.status(400).json({ message: 'Category must be provided!' });
-      }
-
-      const categoriesInstance = await Category.findAll({
-        where: { id: categoryIds },
-        transaction: t,
+  
+      const updatedJob = await job.update({
+        title,
+        description,
+        requirement,
+        job_level,
+        minimum_salary,
+        maximum_salary,
+        type,
+        location,
+        starting_date,
+        minimum_experience,
+        status,
       });
-
-      if (!categoriesInstance || categoriesInstance.length === 0) {
-        return res.status(404).json({
-          message: 'Category not found!',
+  
+      let categoriesInstance = [];
+  
+      if (categoryIds && categoryIds.length > 0) {
+        categoriesInstance = await Category.findAll({
+          where: { id: categoryIds },
         });
+  
+        if (!categoriesInstance || categoriesInstance.length === 0) {
+          return res.status(404).json({
+            message: 'Category not found!',
+          });
+        }
+  
+        await updatedJob.setJobCategories(categoriesInstance);
       }
-
-      await updatedJob.setJobCategories(categoriesInstance, { transaction: t });
-
-      await t.commit();
-
+  
       res.status(200).json({
         message: 'Successfully update job!',
         fullField: {
@@ -216,10 +209,10 @@ class JobController {
         },
       });
     } catch (error) {
-      await t.rollback();
       next(error);
     }
   }
+  
 
   static async destroyJob(req, res, next) {
     try {
