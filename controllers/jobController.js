@@ -84,33 +84,40 @@ class JobController {
     try {
       const userId = req.userLogged.id;
       const { title, description, categoryIds, company_id, requirement, job_level, minimum_salary, maximum_salary, type, location, starting_date, minimum_experience } = req.body;
-
-      const company = await Company.findOne({
-        where: { id: company_id },
-      });
-      if (!company) {
-        return res.status(404).json({ message: 'Company not found!' });
+  
+      let company;
+      if (company_id) {
+        company = await Company.findOne({
+          where: { id: company_id },
+          transaction: t,
+        });
+        if (!company) {
+          await t.rollback();
+          return res.status(404).json({ message: 'Company not found!' });
+        }
       }
-
+  
       if (!categoryIds || categoryIds.length === 0) {
+        await t.rollback();
         return res.status(400).json({ message: 'Category must be provided!' });
       }
-
+  
       const categoriesInstance = await Category.findAll({
         where: { id: categoryIds },
         transaction: t,
       });
-
+  
       if (!categoriesInstance || categoriesInstance.length === 0) {
+        await t.rollback();
         return res.status(404).json({
           message: 'Category not found!',
         });
       }
-
+  
       const job = await Job.create(
         {
           user_id: userId,
-          company_id: company.id,
+          company_id: company ? company.id : null,
           title,
           description,
           requirement,
@@ -124,18 +131,20 @@ class JobController {
         },
         { transaction: t }
       );
-
+  
       await job.setJobCategories(categoriesInstance, { transaction: t });
-
+  
       await t.commit();
-
+  
       res.status(201).json({
         message: 'Successfully create job!',
         fullField: {
           data: job,
-          company: {
-            companyName: company.company_name,
-          },
+          company: company
+            ? {
+                companyName: company.company_name,
+              }
+            : null,
           categories: categoriesInstance.map((category) => ({
             categoryId: category.id,
           })),
@@ -146,6 +155,7 @@ class JobController {
       next(error);
     }
   }
+  
 
   static async updateJob(req, res, next) {
     try {
