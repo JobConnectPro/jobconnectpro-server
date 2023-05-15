@@ -21,7 +21,7 @@ const sendMail = require('../email');
 const sendMailForgotPassword = require('../email-forgot-password');
 const { where } = require('sequelize');
 
-class UserController {
+class userController {
   // get all user
   static async findUsers(req, res, next) {
     try {
@@ -29,15 +29,18 @@ class UserController {
       const page = +req.query.page || 1;
       const offset = (page - 1) * limit;
 
-<<<<<<< HEAD
       const data = await User.findAll({
         limit,
         offset,
         order: [['role', 'ASC']],
       });
       res.status(200).json(data);
-=======
-      const { count, rows } = await User.findAndCountAll({ limit, offset, order: [['role', 'ASC']] });
+
+      const { count, rows } = await User.findAndCountAll({
+        limit,
+        offset,
+        order: [['role', 'ASC']],
+      });
       res.status(200).json({
         totalItems: count,
         data: rows,
@@ -771,7 +774,11 @@ class UserController {
       const { id } = findUser;
 
       if (findUser) {
-        const resetLink = jwt.sign({ email: findUser.email }, process.env.JWT_SECRET, { expiresIn: '12h' });
+        const resetLink = jwt.sign(
+          { email: findUser.email },
+          process.env.JWT_SECRET,
+          { expiresIn: '12h' }
+        );
         const emailData = {
           id: findUser.id,
           name: findUser.name,
@@ -794,7 +801,7 @@ class UserController {
       next(err);
     }
   }
-  
+
   static async resetPassword(req, res, next) {
     const { password } = req.body;
     const resetLink = req.params.token;
@@ -825,4 +832,4 @@ class UserController {
   }
 }
 
-module.exports = UserController;
+module.exports = userController;
