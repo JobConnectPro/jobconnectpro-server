@@ -5,7 +5,6 @@ const authentication = require('../middlewares/authentication.js');
 const resumeUpload = require('../middlewares/multerResume.js');
 const photoUpload = require('../middlewares/multerPhoto.js');
 const authorization = require('../middlewares/authorization.js');
-const userController = require('../controllers/userController.js');
 
 // auth
 router.post('/register', userController.register);
