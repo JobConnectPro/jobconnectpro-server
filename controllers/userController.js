@@ -136,17 +136,26 @@ class userController {
   static async updatePassword(req, res, next) {
     try {
       const { id } = req.userLogged;
-      const { password } = req.body;
+      const { currentPassword, newPassword } = req.body;
+      console.log(id, currentPassword, newPassword);
 
       const findUser = await User.findOne({ where: { id } });
 
       if (findUser) {
-        const hashPassword = await bcrypt.hash(password, 10);
-        const data = await User.update(
-          { password: hashPassword },
-          { where: { id } }
+        const comparePassword = await bcrypt.compare(
+          currentPassword,
+          findUser.password
         );
-        res.status(200).json({ message: 'Successfully update password!' });
+        if (comparePassword) {
+          const hashPassword = await bcrypt.hash(newPassword, 10);
+          const data = await User.update(
+            { password: hashPassword },
+            { where: { id } }
+          );
+          res.status(200).json({ message: 'Successfully update password!' });
+        } else {
+          throw { name: 'WrongPassword' };
+        }
       } else {
         throw { name: 'ErrorNotFound' };
       }
