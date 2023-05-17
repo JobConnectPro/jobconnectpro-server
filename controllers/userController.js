@@ -83,7 +83,7 @@ class UserController {
   static async updateUser(req, res, next) {
     try {
       const { id } = req.userLogged;
-      const { name, birthday, gender, phone, address, summary, salary_expectation } = req.body;
+      const { name, birthday, gender, phone, address, summary, salary_expectation, salary_frequency, privacy } = req.body;
 
       const findUser = await User.findOne({ where: { id } });
 
@@ -97,6 +97,8 @@ class UserController {
             address,
             summary,
             salary_expectation,
+            salary_frequency,
+            privacy,
           },
           { where: { id } }
         );
