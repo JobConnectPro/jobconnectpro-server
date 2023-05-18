@@ -121,7 +121,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
-          len: [1, 255],
+          len: [0, 255],
         },
       },
       summary: {
@@ -158,6 +158,20 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         validate: {
           len: [1, 1000],
+        },
+      },
+      privacy: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: {
+          len: [1, 255],
+        },
+      },
+      salary_frequency: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: {
+          len: [1, 255],
         },
       },
     },
