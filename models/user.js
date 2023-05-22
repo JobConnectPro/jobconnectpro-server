@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'user_id',
       });
 
+      User.hasMany(models.Training, {
+        foreignKey: 'user_id',
+      });
+
       User.hasMany(models.WorkExperience, {
         foreignKey: 'user_id',
       });
