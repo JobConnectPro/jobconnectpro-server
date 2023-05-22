@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { User, Company, WorkExperience, Skill, Education, Project, Organization, Achievement, Attainment, Application, Bookmark, Job, UserSkill, Sector } = require('../models');
+const { User, Company, WorkExperience, Skill, Education, Project, Organization, Achievement, Attainment, Application, Bookmark, Job, UserSkill, Sector, Training } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sendMail = require('../email');
@@ -67,6 +67,9 @@ class UserController {
           {
             model: Project,
           },
+          {
+            model: Training,
+          },
         ],
         order: [
           [WorkExperience, 'start_date', 'ASC'],
@@ -74,6 +77,7 @@ class UserController {
           [Achievement, 'date', 'ASC'],
           [Organization, 'start_date', 'ASC'],
           [Project, 'start_date', 'ASC'],
+          [Training, 'start_date', 'ASC'],
         ],
       });
 
@@ -531,6 +535,9 @@ class UserController {
           {
             model: Project,
           },
+          {
+            model: Training,
+          },
         ],
         order: [
           [WorkExperience, 'start_date', 'ASC'],
@@ -538,6 +545,7 @@ class UserController {
           [Achievement, 'date', 'ASC'],
           [Organization, 'start_date', 'ASC'],
           [Project, 'start_date', 'ASC'],
+          [Training, 'start_date', 'ASC'],
         ],
       });
 
