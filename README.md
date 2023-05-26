@@ -7,8 +7,8 @@ Node JS, Express JS, PostgreSQL
 
 2. Create a folder "uploads" on root directory. The folder structure will look like the following:
 
-jobconnectpro-server
-└── uploads
-    └── logo
-    └── photo
-    └── resume
+jobconnectpro-server\
+└── uploads\
+    └── logo\
+    └── photo\
+    └── resume\
