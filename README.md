@@ -9,6 +9,6 @@ Node JS, Express JS, PostgreSQL
 
 jobconnectpro-server\
 └── uploads\
-&ensp;└── logo\
-&ensp;└── photo\
-&ensp;└── resume
+&emsp;└── logo\
+&emsp;└── photo\
+&emsp;└── resume
