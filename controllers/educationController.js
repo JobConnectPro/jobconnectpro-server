@@ -50,7 +50,14 @@ class EducationController {
   static async createEducation(req, res, next) {
     try {
       const { id } = req.userLogged;
-      const { attainment_id, school, major, description, start_date, end_date } = req.body;
+      const {
+        attainment_id,
+        school,
+        major,
+        description,
+        start_date,
+        end_date,
+      } = req.body;
 
       const data = await Education.create({
         user_id: id,
@@ -74,7 +81,14 @@ class EducationController {
     try {
       const { id } = req.userLogged;
       const { educationId } = req.params;
-      const { attainment_id, school, major, description, start_date, end_date } = req.body;
+      const {
+        attainment_id,
+        school,
+        major,
+        description,
+        start_date,
+        end_date,
+      } = req.body;
 
       const findEducation = await Education.findOne({
         where: { id: educationId, user_id: id },
